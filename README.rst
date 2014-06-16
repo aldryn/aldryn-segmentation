@@ -23,11 +23,12 @@ complex logical conditions can be described. Here's the basics:
 
 "Show details of 10% discount offer to retail customers only."
 
-\> placeholder
-	\> Limit Block: Show first
-		\> Segment by Cookie: 'type' equals 'retail'
-			\> Text: 10% Discount offer...
-		\> Text: Details of offer with normal pricing...
+::
+	> placeholder
+		> Limit Block: Show first
+			> Segment by Cookie: 'type' equals 'retail'
+				> Text: 10% Discount offer...
+			> Text: Details of offer with normal pricing...
 
 
 In this example, the Limit Block will only allow one of its children to be
@@ -44,42 +45,45 @@ that will "count" for the limit of 1 and will be rendered.
 In a similar manner, multiple conditions can be considered and combined with
 AND, OR or XOR operations as required. Here's an OR operation:
 
-\> placeholder
-	\> Limit Block: Show first
-		\> Segment by Cookie: 'type' equals 'retail'
-			\> Text: 10% offer for French customers OR retail customers only.
-		\> Segment by Country: France
-			\> Text: 10% offer for French customers OR retail customers only.
-		\> Text: Normal pricing for everyone else...
+::
+	> placeholder
+		> Limit Block: Show first
+			> Segment by Cookie: 'type' equals 'retail'
+				> Text: 10% offer for French customers OR retail customers only.
+			> Segment by Country: France
+				> Text: 10% offer for French customers OR retail customers only.
+			> Text: Normal pricing for everyone else...
 
 
 An AND operation is a little more complex, but still very easy to do:
 
-\> placeholder
-	\> Limit Block: Show first
-		\> Segment by Cookie: 'type' equals 'retail'
-			\> Limit Block: Show first
-				\> Segment by Country: France
-					\> Text: 10% offer for French Retail Customers only.
-				\> Text: Normal pricing...
-		\> Text: Normal pricing...
+::
+	> placeholder
+		> Limit Block: Show first
+			> Segment by Cookie: 'type' equals 'retail'
+				> Limit Block: Show first
+					> Segment by Country: France
+						> Text: 10% offer for French Retail Customers only.
+					> Text: Normal pricing...
+			> Text: Normal pricing...
 
 
 An XOR operation is also straight forward:
 
-\> placeholder
-	\> Limit Block: Show first
-		\> Segment by Cookie: 'type' equals 'retail'
-			\> Limit Block: Show first
-				\> Segment by Country: France
-					\> Text: Normal pricing...
-				\> Text: 10% offer for French customers OR retail customers only
-				        (but not French retail customers).
-		\> Segment by Country: France
-			\> Limit Block: Show first
-				\> Segment by Cookie: 'type' equals 'retail'
-					\> Text: Normal pricing...
-				\> Text: 10% offer for French customers OR retail customers only
-				        (but not French retail customers).
-		\> Text: Normal pricing...
+::
+	> placeholder
+		> Limit Block: Show first
+			> Segment by Cookie: 'type' equals 'retail'
+				> Limit Block: Show first
+					> Segment by Country: France
+						> Text: Normal pricing...
+					> Text: 10% offer for French customers OR retail customers only
+					        (but not French retail customers).
+			> Segment by Country: France
+				> Limit Block: Show first
+					> Segment by Cookie: 'type' equals 'retail'
+						> Text: Normal pricing...
+					> Text: 10% offer for French customers OR retail customers only
+					        (but not French retail customers).
+			> Text: Normal pricing...
 
