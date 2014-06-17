@@ -4,10 +4,12 @@ Aldryn Segmentation
 
 DEVELOPMENT STATUS
 ------------------
-Limter:
-- [x] Yep!
 
-Segments:
+Segment Limter:
+- [x] Limiter
+
+Segment Plugins:
+- [x] Fallback
 - [x] Segment by Switch (hard switch)
 - [x] Segment by Cookie
 - [x] Segment by Country
@@ -15,14 +17,17 @@ Segments:
 - [ ] Overridable
 
 Segment Pool:
-- [x] Yep!
+- [x] Registration
+- [x] De-registration
+- [x] Discovery
 
 Toolbar:
 - [x] Displays
-- [ ] AJAX/Link Actions
+- [ ] AJAXItems (Actions)
 
 Tests:
 - [ ] Segment Pool tests
+- [ ] Segment logic tests
 
 Documentation:
 - [ ] Operator's guide
