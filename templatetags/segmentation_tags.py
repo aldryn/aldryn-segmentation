@@ -21,7 +21,11 @@ class RenderSegmentPlugin(InclusionTag):
     )
 
     def get_context(self, context, plugin, render_plugin):
-        logger.debug('RenderSegmentPlugin received: %s and %s' % ( plugin, render_plugin, ))
+
+        #
+        # NOTE: This code should be more or less identical to that of
+        # cms.templatetags.cms_tags.RenderPlugin()
+        # --------------------------------------------------------------------
         edit = False
         if not plugin:
             return {'content': ''}
@@ -36,6 +40,9 @@ class RenderSegmentPlugin(InclusionTag):
             processors = (toolbar_plugin_processor,)
         else:
             processors = None
+        # --------------------------------------------------------------------
+        # End of duplicate code
+        #
 
         plugin_instance = plugin  # This makes more sense, no?
         plugin = plugin_instance.get_plugin_class_instance()

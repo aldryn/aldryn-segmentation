@@ -2,7 +2,6 @@
 
 import logging
 
-# from django.contrib.gis.utils import GeoIP
 from django.contrib.gis.geoip import GeoIP
 
 logger = logging.getLogger(__name__)
@@ -28,17 +27,15 @@ class ResolveCountryCodeMiddleware(object):
         logger.critical('Could not initialize GeoIP.')
 
 
-    @classmethod
-    def get_country_code(cls, ipa):
-        if cls.geo_ip:
+    def get_country_code(self, ipa):
+        if self.geo_ip:
             try:
-                return cls.geo_ip.country(ipa)['country_code'].upper()
+                return self.geo_ip.country(ipa)['country_code'].upper()
             except:
                 pass
         return None
 
 
-    @classmethod
-    def process_request(cls, request):
+    def process_request(self, request):
         ipa = request.META.get("HTTP_X_FORWARDED_FOR", request.META["REMOTE_ADDR"])
-        request.META['COUNTRY_CODE'] = cls.get_country_code(ipa)
+        request.META['COUNTRY_CODE'] = self.get_country_code(ipa)
