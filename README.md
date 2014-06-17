@@ -5,27 +5,28 @@ Aldryn Segmentation
 DEVELOPMENT STATUS
 ------------------
 Limter:
-  √ Yep!
+- [x] Yep!
 
 Segments:
-  √ Segment by Switch (hard switch)
-  √ Segment by Cookie
-  √ Segment by Country
-  o Segment by Auth
-  o Overridable
+- [x] Segment by Switch (hard switch)
+- [x] Segment by Cookie
+- [x] Segment by Country
+- [ ] Segment by Auth
+- [ ] Overridable
 
 Segment Pool:
-  √ Yep!
+- [x] Yep!
 
 Toolbar:
-  √ Displays
-  o AJAX/Link Actions
+- [x] Displays
+- [ ] AJAX/Link Actions
 
 Tests:
-  o
+- [ ] Segment Pool tests
 
 Documentation:
-  o
+- [ ] Operator's guide
+- [ ] Developer's guide
 
 
 DESCRIPTION
