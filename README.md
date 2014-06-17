@@ -2,6 +2,35 @@
 Aldryn Segmentation
 ===================
 
+DEVELOPMENT STATUS
+------------------
+Limter:
+  √ Yep!
+
+Segments:
+  √ Segment by Switch (hard switch)
+  √ Segment by Cookie
+  √ Segment by Country
+  o Segment by Auth
+  o Overridable
+
+Segment Pool:
+  √ Yep!
+
+Toolbar:
+  √ Displays
+  o AJAX/Link Actions
+
+Tests:
+  o
+
+Documentation:
+  o
+
+
+DESCRIPTION
+-----------
+
 This django CMS application allows the CMS operator to display different
 content to different "segments" of visitors.
 
