@@ -43,7 +43,7 @@ class SegmentPluginBase(CMSPluginBase):
 
         from ..segment_pool import segment_pool, SegmentOverride
 
-        if self.allow_overrides:
+        if self.allow_overrides and hasattr(instance, 'configuration_string'):
             return segment_pool.get_override_for_segment(self.__class__.__name__, instance.configuration_string)
         else:
             SegmentOverride.NoOverride
