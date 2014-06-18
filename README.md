@@ -48,6 +48,7 @@ This is a list of known issues that are being worked on...
 ### Critical
 - [ ] !!! segment_pool is a system-wide singleton, so, multiple operators
       would be affecting one another with overrides.
+- [ ] ! There appears to be a csrf_token conflict of some sort.
 
 ### Important
 - [ ] The toolbar menu doesn't indicate which branches have active overrides
