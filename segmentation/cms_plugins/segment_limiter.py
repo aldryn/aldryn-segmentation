@@ -2,12 +2,12 @@
 
 from django.utils.translation import ugettext_lazy as _
 from cms.plugin_pool import plugin_pool
-from cms.plugin_base import CMSPluginBase
 
 from ..models import SegmentLimitPluginModel
+from .segment_plugin_base import SegmentPluginBase
 
 
-class SegmentLimitPlugin(CMSPluginBase):
+class SegmentLimitPlugin(SegmentPluginBase):
     '''
     This is a special SegmentPlugin that acts as a top-level container for
     segmentation plugins and can set an upper-limit to the number of children
@@ -15,18 +15,27 @@ class SegmentLimitPlugin(CMSPluginBase):
     '''
 
     allow_children = True
-    cache = False
     model = SegmentLimitPluginModel
     module = _('Segmentation')
     name = _('Limit Block')
     render_template = 'segmentation/_limiter.html'
-    text_enabled = False
 
+    allow_overrides = False
 
     def render(self, context, instance, placeholder):
         context = super(SegmentLimitPlugin, self).render(context, instance, placeholder)
         context['child_plugins'] = self.get_context_appropriate_children(context, instance)
         return context
+
+
+    def is_context_appropriate(self, context, instance):
+        '''
+        Returns True if any of its children are context-appropriate,
+        else False.
+        '''
+        apt_children = self.get_context_appropriate_children(context, instance)
+        num_apt = sum( 1 for child in apt_children if child[1] )
+        return num_apt > 0
 
 
     def get_context_appropriate_children(self, context, instance):
@@ -93,5 +102,6 @@ class SegmentLimitPlugin(CMSPluginBase):
             children.append(child)
 
         return children
+
 
 plugin_pool.register_plugin(SegmentLimitPlugin)

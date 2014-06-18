@@ -58,8 +58,6 @@ This is a list of known issues that are being worked on...
 ### Other
 - [ ] Need proper alpha-sorting of top-level of Segment toolbar menu whilst
       respecting i18n.
-- [ ] Building a logical "switch statement" is too complex and a potentially
-      common use case.
 
 
 
