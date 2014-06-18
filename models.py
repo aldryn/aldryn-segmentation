@@ -486,3 +486,13 @@ class CountrySegmentPluginModel(SegmentBasePluginModel):
     @property
     def configuration_string(self):
         return u'%s (%s)' % (self.country_code_names[self.country_code], self.country_code)
+
+
+class Segment(models.Model):
+    class Meta:
+        managed=False
+
+    '''
+    This is a hollow, unmanaged model that simply allows us to attach custom
+    admin views into the AdminSite.
+    '''

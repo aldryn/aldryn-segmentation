@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import logging
+# import operator
 
 from django.core.exceptions import ImproperlyConfigured
 
 from cms.exceptions import PluginAlreadyRegistered, PluginNotRegistered
 from cms.plugin_pool import plugin_pool
+# from cms.utils.compat.dj import force_unicode
+
 from sortedcontainers import SortedDict
+
 from aldryn_segmentation.cms_plugins import SegmentPluginBase
 
 logger = logging.getLogger(__name__)
@@ -37,7 +41,7 @@ class SegmentPool(object):
     }
     '''
     def __init__(self):
-        self.segments = dict()
+        self.segments = SortedDict()
         self._sorted_segments = None
         self.discover()
 
@@ -156,16 +160,45 @@ class SegmentPool(object):
         # 'configurations' sub-struct is already sorted alphabetically which
         # is useful for proper presentation in menus.
         #
-        # The outermost dict is a normal dict, because we need it to be sorted
-        # by the 'name' item within, not the key itself. This is easy and
-        # quick to do with Python, but, we don't need/want to do this unless
-        # necessary, since this will be called for every request during an
-        # operator's session.
+        # The outermost dict is also a SortedDict, because we need it to
+        # retain a sort, but not necessarily an automatic one. We need it to
+        # be sorted by the 'name' item within, not the key itself. This is
+        # easy and quick to do with Python, but, we don't need/want to do this
+        # unless necessary, since this will be called for every request during
+        # an operator's session.
         #
         if not self._sorted_segments:
-            self._sorted_segments = self.segments # sorted(self.segments, key=lambda x: x['name'])
+            self._sorted_segments = self.segments
+            # logger.info(self._sorted_segments)
 
         return self._sorted_segments
+
+
+    def set_override(self, segment_class, segment_config, override, value=True):
+        '''
+        (Re-)Set an override on a segment (segment_class x segment_config).
+        '''
+
+        if value:
+            self.segments[segment_class]['configurations'][segment_config]['override'] = override
+        else:
+            self.segments[segment_class]['configurations'][segment_config]['override'] = SegmentOverride.NoOverride
+
+
+    def reset_all_segment_overrides(self):
+        '''
+        Resets (disables) the overrides for all segments.
+        '''
+        for segment_class in self.segments.itervalues():
+            for configuration in segment_class['configurations'].itervalues():
+                configuration['override'] = SegmentOverride.NoOverride
+
+    def get_override_for_segment(self, segment_class, segment_config):
+        '''
+        Given a specific segment/configuration, return the current override.
+        '''
+
+        return int(self.segments[segment_class]['configurations'][segment_config]['override'])
 
 
 segment_pool = SegmentPool()
