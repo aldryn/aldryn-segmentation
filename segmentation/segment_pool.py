@@ -1,19 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import logging
-# import operator
-
 from django.core.exceptions import ImproperlyConfigured
 
 from cms.exceptions import PluginAlreadyRegistered, PluginNotRegistered
 from cms.plugin_pool import plugin_pool
-# from cms.utils.compat.dj import force_unicode
 
 from sortedcontainers import SortedDict
 
-from aldryn_segmentation.cms_plugins import SegmentPluginBase
-
-logger = logging.getLogger(__name__)
+from .cms_plugins import SegmentPluginBase
 
 
 #
@@ -169,7 +163,7 @@ class SegmentPool(object):
         #
         if not self._sorted_segments:
             self._sorted_segments = self.segments
-            # logger.info(self._sorted_segments)
+            # TODO: How to sort this properly!
 
         return self._sorted_segments
 

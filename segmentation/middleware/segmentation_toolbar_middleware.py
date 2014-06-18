@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import logging
-
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from aldryn_segmentation.segment_pool import segment_pool, SegmentOverride
 from cms.toolbar.items import SubMenu, Break, AjaxItem
 
-logger = logging.getLogger(__name__)
+from ..segment_pool import segment_pool, SegmentOverride
 
 
 class SegmentationToolbarMiddleware(object):
@@ -25,7 +22,9 @@ class SegmentationToolbarMiddleware(object):
 
         pool = segment_pool.get_registered_segments()
 
+        #
         # Count the number of current overrides...
+        #
         num_overrides = 0
         for segment_class in pool.itervalues():
             for config in segment_class['configurations'].itervalues():
@@ -34,7 +33,7 @@ class SegmentationToolbarMiddleware(object):
                     num_overrides += 1
 
         segment_menu_name = _('Segments (%s)' % num_overrides) if num_overrides else _('Segments')
-        segment_menu = toolbar.get_or_create_menu('aldryn-segmentation-menu', segment_menu_name)
+        segment_menu = toolbar.get_or_create_menu('segmentation-menu', segment_menu_name)
 
         for segment_class in pool:
             segment_name = pool[segment_class]['name']

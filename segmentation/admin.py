@@ -8,11 +8,11 @@ from .views import set_segment_override, reset_all_segment_overrides
 
 class SegmentAdmin(admin.ModelAdmin):
 
-    '''
-    Note: model.Segment is empty and unmanaged. Its sole purpose is to provide
-    the opportunity to add custom views to the AdminSite for managing segments
-    from the toolbar.
-    '''
+    #
+    # Note: model.Segment is empty and un-managed. Its sole purpose is to
+    # provide the opportunity to add custom views to the AdminSite for
+    # managing segments from the toolbar.
+    #
 
     def get_urls(self):
 

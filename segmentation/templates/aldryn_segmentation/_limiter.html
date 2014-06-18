@@ -4,5 +4,4 @@
 	where, instance is the child plugin instance and Boolean represents
 	whether the plugin should be rendered in this context.
 
-{% endcomment %}
-{% for child in child_plugins %}{% render_segment_plugin child.0 child.1 %}{% endfor %}
+{% endcomment %}{% for child in child_plugins %}{% render_segment_plugin child.0 child.1 %}{% endfor %}

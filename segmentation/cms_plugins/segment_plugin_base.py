@@ -22,7 +22,7 @@ class SegmentPluginBase(CMSPluginBase):
     allow_children = True
     cache = False
     module = _('Segmentation')
-    render_template = 'aldryn_segmentation/_segment.html'
+    render_template = 'segmentation/_segment.html'
     text_enabled = False
 
     #
@@ -33,13 +33,14 @@ class SegmentPluginBase(CMSPluginBase):
 
 
     def get_segment_override(self, instance):
-        from ..segment_pool import segment_pool, SegmentOverride
         '''
         If this segment plugin allows overrides, then return the current
         override for this segment, else, returns SegmentOverride.NoOverride.
 
         This should NOT be overridden in subclasses.
         '''
+
+        from ..segment_pool import segment_pool, SegmentOverride
 
         if self.allow_overrides:
             return segment_pool.get_override_for_segment(self.__class__.__name__, instance.configuration_string)
@@ -54,15 +55,4 @@ class SegmentPluginBase(CMSPluginBase):
         supply the appropriate tests.
         '''
 
-        #
-        # NOTE: The 'context' argument above will contain a PluginContext.
-        # PluginContexts are subclassed from Context. See:
-        # cms.plugin_rendering.py for the PluginContext implementation.
-        #
-
         return True
-
-    def render(self, context, instance, placeholder):
-        context['instance'] = instance
-        context['placeholder'] = placeholder
-        return context

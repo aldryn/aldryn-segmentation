@@ -1,23 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import logging
-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from cms.exceptions import PluginAlreadyRegistered, PluginNotRegistered
 from cms.models import CMSPlugin
 
-logger = logging.getLogger(__name__)
-
 
 #
 # NOTE: The SegmentLimitPluginModel does NOT subclass SegmentBasePluginModel
 #
 class SegmentLimitPluginModel(CMSPlugin):
+
     #
-    # This is an awkward input, consider using a UI widget that makes better
-    # sense of this.
+    # Need to consider how best to display this in the Plugin Change Form...
     #
     #   0 means "Display ALL segments that match",
     #   1 means "Display first matching segment",
@@ -56,12 +52,12 @@ class SegmentLimitPluginModel(CMSPlugin):
 
 
 class SegmentBasePluginModel(CMSPlugin):
-    class Meta:
-        abstract = True
-
     '''
     Defines a common interface.
     '''
+
+    class Meta:
+        abstract = True
 
     label = models.CharField(_('label'),
         blank=True,
@@ -95,13 +91,13 @@ class SegmentBasePluginModel(CMSPlugin):
 
 
     def save(self, *args, **kwargs):
-        from aldryn_segmentation.segment_pool import segment_pool
-
         '''
         A shim to ensure that initial saves and/or configuration changes
         results in the de-registering (if necessary) and registering of this
         segment plugin.
         '''
+
+        from .segment_pool import segment_pool
 
         allow_overrides = self.get_plugin_class_instance().allow_overrides
 
@@ -122,8 +118,6 @@ class SegmentBasePluginModel(CMSPlugin):
 
 
     def delete(self, *args, **kwargs):
-        from aldryn_segmentation.segment_pool import segment_pool
-        
         '''
         A shim to ensure that segment_plugins are deregistered before they are
         deleted. Note that this won't be called if the deletion is done in a
@@ -131,6 +125,8 @@ class SegmentBasePluginModel(CMSPlugin):
         https://docs.djangoproject.com/en/dev/topics/db/models/#model-methods
         '''
         
+        from .segment_pool import segment_pool
+
         try:
             segment_pool.unregister_segment_plugin(self)
         except PluginNotRegistered:
@@ -490,10 +486,10 @@ class CountrySegmentPluginModel(SegmentBasePluginModel):
 
 
 class Segment(models.Model):
-    class Meta:
-        managed=False
-
     '''
     This is a hollow, unmanaged model that simply allows us to attach custom
     admin views into the AdminSite.
     '''
+
+    class Meta:
+        managed=False

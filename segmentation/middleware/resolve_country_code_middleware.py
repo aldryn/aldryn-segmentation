@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import logging
-
 from django.contrib.gis.geoip import GeoIP
-
-logger = logging.getLogger(__name__)
 
 
 class ResolveCountryCodeMiddleware(object):
@@ -15,16 +11,14 @@ class ResolveCountryCodeMiddleware(object):
     '''
 
     #
-    # Initialize the GeoIP DB API. This is only done once, and it happens on
-    # the first request.
+    # TODO: Move this and related bits to another repo
     #
 
-    try:
-        geo_ip = GeoIP()
-        logger.info('GeoIP initialized and middleware installed.')
-    except:
-        geo_ip = False
-        logger.critical('Could not initialize GeoIP.')
+    def __init__(self):
+        try:
+            self.geo_ip = GeoIP()
+        except:
+            self.geo_ip = False
 
 
     def get_country_code(self, ipa):

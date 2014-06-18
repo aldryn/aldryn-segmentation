@@ -1,15 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import logging
-
 from django.utils.translation import ugettext_lazy as _
 from cms.plugin_pool import plugin_pool
 from cms.plugin_base import CMSPluginBase
 
 from ..models import SegmentLimitPluginModel
-
-
-logger = logging.getLogger(__name__)
 
 
 class SegmentLimitPlugin(CMSPluginBase):
@@ -24,7 +19,7 @@ class SegmentLimitPlugin(CMSPluginBase):
     model = SegmentLimitPluginModel
     module = _('Segmentation')
     name = _('Limit Block')
-    render_template = 'aldryn_segmentation/_limiter.html'
+    render_template = 'segmentation/_limiter.html'
     text_enabled = False
 
 
@@ -35,7 +30,7 @@ class SegmentLimitPlugin(CMSPluginBase):
 
 
     def get_context_appropriate_children(self, context, instance):
-        from aldryn_segmentation.segment_pool import SegmentOverride
+        from ..segment_pool import SegmentOverride
         '''
         Returns a LIST OF TUPLES each containing a child plugin instance and a
         Boolean representing the plugin's appropriateness for rendering in
@@ -56,43 +51,47 @@ class SegmentLimitPlugin(CMSPluginBase):
                 # instead use isinstance(...)
                 #
                 if hasattr(child_plugin, 'is_context_appropriate'):
+                    #
                     # This is a segment plugin... or at least quacks like one.
-                    if child_plugin.allow_overrides and hasattr(child_plugin, 'get_segment_override'):
+                    #
+                    if hasattr(child_plugin, 'allow_overrides') and child_plugin.allow_overrides and hasattr(child_plugin, 'get_segment_override'):
 
                         override = child_plugin.get_segment_override(child_instance)
 
                         if override == SegmentOverride.ForcedActive:
-                            # FORCE ON/ACTIVE
-                            logger.info(u'Segment “%s” is forced ON' % child_instance)
                             child = (child_instance, True)
                         elif override == SegmentOverride.ForcedInactive:
-                            # FORCE OFF/INACTIVE
-                            logger.info(u'Segment “%s” is forced OFF' % child_instance)
                             child = (child_instance, False)
                         else:
-                            # Let the segment decide...
+                            #
+                            # There's no override, so, just let the segment decide...
+                            #
                             child = (child_instance, child_plugin.is_context_appropriate(context, child_instance), )
                     else:
                         #
-                        # Hmmm, this "segment plugin" appears to have no
-                        # get_operator_override() method. OK then, let the
-                        # segment plugin decide if it is appropriate.
+                        # Hmmm, this segment plugin appears to have no
+                        # allow_overrides property or get_segment_override()
+                        # method. OK then, let the plugin decide if it is
+                        # appropriate to render.
                         #
-                        logger.info(u'Segment “%s” isn’t overridable?' % child_instance)
                         child = (child_instance, child_plugin.is_context_appropriate(context, child_instance), )
                 else:
-                    # This is a normal plugin. It is always OK to render.
+                    #
+                    # This doesn't quack like a Segment Plugin, so, it is
+                    # always OK to render.
+                    #
                     child =  ( child_instance, True, )
 
                 if child[1]:
                     slots_remaining -= 1
             else:
+                #
                 # We've run out of available slots...
+                #
                 child = ( child_instance, False, )
 
             children.append(child)
 
-        # logger.debug(u'In this context, these child plugins seem appropriate: %s' % [child for child in children if child[1]])
         return children
 
 plugin_pool.register_plugin(SegmentLimitPlugin)

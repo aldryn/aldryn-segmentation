@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import logging
-
 from django.http import HttpResponse
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 from cms.utils.compat.dj import force_unicode
 
 from .segment_pool import segment_pool
-
-logger = logging.getLogger(__name__)
 
 
 @require_POST
@@ -36,5 +32,6 @@ def reset_all_segment_overrides(request):
     '''
     This view resets all segment overrides in one go.
     '''
+
     segment_pool.reset_all_segment_overrides()
     return HttpResponse(force_unicode(_("The all segment override were successfully reset.")))

@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import logging
-
 from django.utils.translation import ugettext_lazy as _
 
 from cms.plugin_pool import plugin_pool
 
-from aldryn_segmentation.cms_plugins import SegmentPluginBase
+from ..cms_plugins import SegmentPluginBase
 
 from ..models import (
     CookieSegmentPluginModel,
@@ -14,8 +12,6 @@ from ..models import (
     SwitchSegmentPluginModel,
     CountrySegmentPluginModel,
 )
-
-logger = logging.getLogger(__name__)
 
 
 class FallbackSegmentPlugin(SegmentPluginBase):
@@ -80,6 +76,10 @@ class CountrySegmentPlugin(SegmentPluginBase):
     middleware, in turn, depends on django.contrib.geo_ip and MaxMind's
     GeoLite dataset or similar.
     '''
+
+    #
+    # TODO: Move this and related bits to another repo
+    #
 
     model = CountrySegmentPluginModel
     name = _('Segment by Country')
