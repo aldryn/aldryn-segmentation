@@ -56,9 +56,10 @@ This is a list of known issues that are being worked on...
       in the instances. Need to verify.
 
 ### Other
-- [ ] Need proper alpha-sorting of top-level of Segment toolbar menu whilst respecting i18n.
-- [ ] Building a logical (A OR B OR C ...) (3 or more) is too complex and a
-      potentially common use case.
+- [ ] Need proper alpha-sorting of top-level of Segment toolbar menu whilst
+      respecting i18n.
+- [ ] Building a logical "switch statement" is too complex and a potentially
+      common use case.
 
 
 
