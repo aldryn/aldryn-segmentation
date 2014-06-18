@@ -22,6 +22,7 @@ class SegmentPluginBase(CMSPluginBase):
     allow_children = True
     cache = False
     module = _('Segmentation')
+    parent_classes = ['SegmentLimitPlugin', ]
     render_template = 'segmentation/_segment.html'
     text_enabled = False
 

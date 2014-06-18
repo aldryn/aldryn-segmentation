@@ -18,6 +18,7 @@ class SegmentLimitPlugin(SegmentPluginBase):
     model = SegmentLimitPluginModel
     module = _('Segmentation')
     name = _('Limit Block')
+    parent_classes = None
     render_template = 'segmentation/_limiter.html'
 
     allow_overrides = False
