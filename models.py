@@ -47,6 +47,7 @@ class SegmentLimitPluginModel(CMSPlugin):
         else:
             return u'Show First %d' % self.max_children
 
+
     def __unicode__(self):
         if self.label:
             return u'%s [%s]' % (self.label, self.configuration_string, )
@@ -200,7 +201,7 @@ class CookieSegmentPluginModel(SegmentBasePluginModel):
 
     @property
     def configuration_string(self):
-        return u'%s equals %s' % (self.cookie_key, self.cookie_value, )
+        return u'“%s” equals “%s”' % (self.cookie_key, self.cookie_value, )
 
 
 class CountrySegmentPluginModel(SegmentBasePluginModel):
