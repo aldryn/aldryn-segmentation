@@ -14,7 +14,6 @@ Development Status
 - [x] Segment by Country
 - [ ] Segment by Auth
 - [x] Overridable
-- [ ] Move Country to an example implementation branch
 
 ### Segment Pool:
 - [x] Registration
@@ -22,11 +21,9 @@ Development Status
 - [x] Discovery
 - [x] Get override state for segment
 - [x] Reset all overrides
-- [ ] Proper sorting of top-level
 
 ### Toolbar:
 - [x] Displays
-- [ ] Shows branches with active overrides (limitation of CMS!)
 - [x] Working override states
 - [x] Working "Reset all" option
 - [x] Displays no. of overrides in Segment menu name
@@ -38,6 +35,31 @@ Development Status
 ### Documentation:
 - [ ] Operator's guide
 - [ ] Developer's guide
+
+### Other:
+- [ ] Move the Country Segment and its related bits to another repo?
+
+
+Known Issues
+------------
+
+This is a list of known issues that are being worked on...
+
+### Critical
+- [ ] !!! segment_pool is a system-wide singleton, so, multiple operators
+      would be affecting one another with overrides.
+
+### Important
+- [ ] The toolbar menu doesn't indicate which branches have active overrides
+      (limitation of CMS!)
+- [ ] Deleted segment plugins on clipboard may be bypassing the delete() code
+      in the instances. Need to verify.
+
+### Other
+- [ ] Need proper alpha-sorting of top-level of Segment toolbar menu whilst respecting i18n.
+- [ ] Building a logical (A OR B OR C ...) (3 or more) is too complex and a
+      potentially common use case.
+
 
 
 Description
