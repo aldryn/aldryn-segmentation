@@ -1,40 +1,46 @@
-===================
 Aldryn Segmentation
 ===================
 
-DEVELOPMENT STATUS
+Development Status
 ------------------
 
-Segment Limter:
+### Segment Limter:
 - [x] Limiter
 
-Segment Plugins:
+### Segment Plugins:
 - [x] Fallback
 - [x] Segment by Switch (hard switch)
 - [x] Segment by Cookie
 - [x] Segment by Country
 - [ ] Segment by Auth
-- [ ] Overridable
+- [x] Overridable
+- [ ] Move Country to an example implementation branch
 
-Segment Pool:
+### Segment Pool:
 - [x] Registration
 - [x] De-registration
 - [x] Discovery
+- [x] Get override state for segment
+- [x] Reset all overrides
+- [ ] Proper sorting of top-level
 
-Toolbar:
+### Toolbar:
 - [x] Displays
-- [ ] AJAXItems (Actions)
+- [ ] Shows branches with active overrides (limitation of CMS!)
+- [x] Working override states
+- [x] Working "Reset all" option
+- [x] Displays no. of overrides in Segment menu name
 
-Tests:
+### Tests:
 - [ ] Segment Pool tests
 - [ ] Segment logic tests
 
-Documentation:
+### Documentation:
 - [ ] Operator's guide
 - [ ] Developer's guide
 
 
-DESCRIPTION
+Description
 -----------
 
 This django CMS application allows the CMS operator to display different
