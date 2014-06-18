@@ -26,10 +26,25 @@ class SegmentPluginBase(CMSPluginBase):
     text_enabled = False
 
     #
-    # This is a new property. Leave set to True to allow this plugin to be
-    # displayed in the Segment Menu for overriding by the operator.
+    # Leave set to True to allow this plugin to be displayed in the Segment
+    # Toolbar Menu for overriding by the operator.
     #
     allow_overrides = True
+
+
+    def get_segment_override(self, instance):
+        from ..segment_pool import segment_pool, SegmentOverride
+        '''
+        If this segment plugin allows overrides, then return the current
+        override for this segment, else, returns SegmentOverride.NoOverride.
+
+        This should NOT be overridden in subclasses.
+        '''
+
+        if self.allow_overrides:
+            return segment_pool.get_override_for_segment(self.__class__.__name__, instance.configuration_string)
+        else:
+            SegmentOverride.NoOverride
 
 
     def is_context_appropriate(self, context, instance):
@@ -46,3 +61,8 @@ class SegmentPluginBase(CMSPluginBase):
         #
 
         return True
+
+    def render(self, context, instance, placeholder):
+        context['instance'] = instance
+        context['placeholder'] = placeholder
+        return context
