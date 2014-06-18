@@ -2,8 +2,6 @@
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
-from cms.exceptions import PluginAlreadyRegistered, PluginNotRegistered
 from cms.models import CMSPlugin
 
 
@@ -53,7 +51,10 @@ class SegmentLimitPluginModel(CMSPlugin):
 
 class SegmentBasePluginModel(CMSPlugin):
     '''
-    Defines a common interface.
+    Defines a common interface for segment plugins. Also note that plugin
+    model's subclassing this class will automatically be (un-)registered
+    (from)to the segment_pool via 'pre_delete' and 'post_save' signals. This
+    is implemented in segmentation.segment_pool.
     '''
 
     class Meta:
@@ -88,50 +89,6 @@ class SegmentBasePluginModel(CMSPlugin):
         NOTE: Each subclass must override to suit.
         '''
         raise NotImplementedError("Please Implement this method")
-
-
-    def save(self, *args, **kwargs):
-        '''
-        A shim to ensure that initial saves and/or configuration changes
-        results in the de-registering (if necessary) and registering of this
-        segment plugin.
-        '''
-
-        from .segment_pool import segment_pool
-
-        allow_overrides = self.get_plugin_class_instance().allow_overrides
-
-
-        if self.pk and allow_overrides:
-            try:
-                segment_pool.unregister_segment_plugin(self)
-            except PluginNotRegistered:
-                pass
-
-        if allow_overrides:
-            try:
-                segment_pool.register_segment_plugin(self)
-            except PluginAlreadyRegistered:
-                pass
-
-        super(SegmentBasePluginModel, self).save(*args, **kwargs)
-
-
-    def delete(self, *args, **kwargs):
-        '''
-        A shim to ensure that segment_plugins are deregistered before they are
-        deleted. Note that this won't be called if the deletion is done in a
-        bulk operation. See:
-        https://docs.djangoproject.com/en/dev/topics/db/models/#model-methods
-        '''
-        
-        from .segment_pool import segment_pool
-
-        try:
-            segment_pool.unregister_segment_plugin(self)
-        except PluginNotRegistered:
-            pass
-        super(SegmentBasePluginModel, self).delete(*args, **kwargs)
 
 
     def __unicode__(self):
@@ -483,6 +440,21 @@ class CountrySegmentPluginModel(SegmentBasePluginModel):
     @property
     def configuration_string(self):
         return u'%s (%s)' % (self.country_code_names[self.country_code], self.country_code)
+
+
+# class AuthSegmentPluginModel(SegmentBasePluginModel):
+
+#     group = models.CharField(_('Authentication Group?'),
+#         default=True,
+#         help_text=_('Uncheck to always hide child plugins.'),
+#     )
+
+#     @property
+#     def configuration_string(self):
+#         if self.on_off:
+#             return u'Always ON'
+#         else:
+#             return u'Always OFF'
 
 
 class Segment(models.Model):

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from django.core.exceptions import ImproperlyConfigured
+from django.db.models.signals import pre_delete, post_save
+from django.dispatch import receiver
 
 from cms.exceptions import PluginAlreadyRegistered, PluginNotRegistered
 from cms.plugin_pool import plugin_pool
@@ -196,3 +198,49 @@ class SegmentPool(object):
 
 
 segment_pool = SegmentPool()
+
+
+@receiver(post_save)
+def register_segment(sender, instance, created, **kwargs):
+    '''
+    Ensure that saving changes in the model results in the de- registering (if
+    necessary) and registering of this segment plugin.
+    '''
+
+    from .segment_pool import segment_pool
+
+    if isinstance(instance, 'SegmentBasePluginModel'):
+        allow_overrides = instance.get_plugin_class_instance().allow_overrides
+
+        # If this isn't a new plugin, then we need to unregister first.
+        if not created and allow_overrides:
+            try:
+                segment_pool.unregister_segment_plugin(instance)
+            except PluginNotRegistered:
+                pass
+
+        # Either way, we register it.
+        if allow_overrides:
+            try:
+                segment_pool.register_segment_plugin(instance)
+            except PluginAlreadyRegistered:
+                pass
+
+
+@receiver(pre_delete)
+def unregister_segment(sender, instance, **kwargs):
+    '''
+    Listens for signals that this SegmentPlugin instance is to be deleted, and
+    un-registers it from the segment_pool.
+    '''
+
+    from .segment_pool import segment_pool
+
+    if isinstance(instance, 'SegmentBasePluginModel'):
+        plugin_class = instance.get_plugin_class_instance()
+
+        if plugin_class.allow_overrides:
+            try:
+                segment_pool.unregister_segment_plugin(instance)
+            except PluginNotRegistered:
+                pass

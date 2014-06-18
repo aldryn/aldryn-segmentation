@@ -7,6 +7,7 @@ from cms.plugin_pool import plugin_pool
 from ..cms_plugins import SegmentPluginBase
 
 from ..models import (
+    # AuthSegmentPluginModel,
     CookieSegmentPluginModel,
     FallbackSegmentPluginModel,
     SwitchSegmentPluginModel,
@@ -89,3 +90,23 @@ class CountrySegmentPlugin(SegmentPluginBase):
         return (code == instance.country_code)
 
 plugin_pool.register_plugin(CountrySegmentPlugin)
+
+
+# class AuthSegmentPlugin(SegmentPluginBase):
+#     '''
+#     This plugin allows segmentation based on the authentication/authorization
+#     status of the visitor.
+#     '''
+
+#     #
+#     # TODO: Move this and related bits to another repo
+#     #
+
+#     model = AuthSegmentPluginModel
+#     name = _('Segment by Auth')
+
+#     def is_context_appropriate(self, context, instance):
+#         code = context.get('COUNTRY_CODE')
+#         return (code == instance.country_code)
+
+# plugin_pool.register_plugin(AuthSegmentPlugin)
