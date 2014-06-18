@@ -43,7 +43,7 @@ class SwitchSegmentPlugin(SegmentPluginBase):
     name = _('Segment by Switch')
 
     # It doesn't make much sense to override this one...
-    allow_overrides = True
+    allow_overrides = False
 
     def is_context_appropriate(self, context, instance):
         return instance.on_off
