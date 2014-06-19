@@ -192,27 +192,6 @@ class SegmentPool(object):
         self._sorted_segments = dict()
 
 
-    def get_registered_segments(self):
-        '''
-        Returns the SegmentPool sorted appropriately for human consumption in
-        the current language. This means that the _('name') value should
-        determine the sort order of the outer dict and the _('segment_config')
-        key should determine the order of the inner dicts. In both cases, the
-        keys need to be compared in the provided language.
-
-        Further note that the current language is given by get_language() and
-        that this will reflect the CMS operator's user settings, NOT the current
-        PAGE language.
-        '''
-
-        lang = get_language()
-        if not lang in self._sorted_segments:
-            # TODO: How to sort this properly!
-            self._sorted_segments[lang] = self.segments
-
-        return self._sorted_segments[lang]
-
-
     #
     # TODO: I don't like this int-casting used here or anywhere.
     #
@@ -226,6 +205,71 @@ class SegmentPool(object):
             return int(overrides[user.username])
         else:
             return SegmentOverride.NoOverride
+
+
+    def get_registered_segments(self):
+        '''
+        Returns the SegmentPool as a list of tuples sorted appropriately for
+        human consumption in *the current language*. This means that the
+        _('name') value should determine the sort order of the outer dict and
+        the _('segment_config') key should determine the order of the inner
+        dicts. In both cases, the keys need to be compared in the provided
+        language.
+
+        Further note that the current language is given by get_language() and
+        that this will reflect the CMS operator's user settings, NOT the current
+        PAGE language.
+
+        NOTE: that the structure of the sorted pool is different. Two of the
+        nested dicts are now lists of tuples so that the sort can be retained.
+
+        _sorted_segments = [
+            (
+                /class/,
+                {
+                    'NAME': _(/name/),
+                    'CONFIGURATIONS': [
+                        (
+                            _(/configuration_string/),
+                            {
+                                'OVERRIDES': {
+                                    /user.id/: /SegmentOverride enum value/,
+                                    ...
+                                },
+                                'INSTANCES': [ ... ]
+                            }
+                        )
+                    ]
+                }
+            )
+        ]
+        '''
+
+        from copy import deepcopy
+
+        lang = get_language()
+        if not lang in self._sorted_segments:
+            #
+            # Sort the outer dict in the current language, convering it to a
+            # list of tuples. Note, we're taking starting from a deep copy of
+            # the original pool dict.
+            #
+            self._sorted_segments[lang] = sorted(
+                deepcopy(self.segments).items(),
+                key=lambda x: x[1]['NAME'].encode('utf-8')
+            )
+
+            #
+            # Sort each of the inner dicts in the current language, converting
+            # them to lists of tuples too.
+            #
+            for _, segment_class in self._sorted_segments[lang]:
+                segment_class['CONFIGURATIONS'] = sorted(
+                    segment_class['CONFIGURATIONS'].items(),
+                    key=lambda x: x[0].encode('utf-8')
+                )
+
+        return self._sorted_segments[lang]
 
 
 segment_pool = SegmentPool()

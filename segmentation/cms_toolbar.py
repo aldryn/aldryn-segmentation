@@ -29,14 +29,15 @@ class SegmentToolbar(CMSToolbar):
         Using the SegmentPool, create a segmentation menu.
         '''
 
+        # NOTE: This is a list of tuples now...
         pool = segment_pool.get_registered_segments()
 
         #
         # Count the number of current overrides for this specific user...
         #
         num_overrides = 0
-        for segment_class in pool.itervalues():
-            for config in segment_class['CONFIGURATIONS'].itervalues():
+        for segment_class_name, segment_class in pool:
+            for config_str, config in segment_class['CONFIGURATIONS']:
                 for username, override in config['OVERRIDES'].iteritems():
                     if username == user.username and int(override):
                         num_overrides += 1
@@ -44,13 +45,13 @@ class SegmentToolbar(CMSToolbar):
         segment_menu_name = _('Segments (%s)' % num_overrides) if num_overrides else _('Segments')
         segment_menu = toolbar.get_or_create_menu('segmentation-menu', segment_menu_name)
 
-        for segment_class in pool:
-            segment_name = pool[segment_class]['NAME']
+        for segment_class_name, segment_class in pool:
+            segment_name = segment_class['NAME']
 
-            segment_class_menu = segment_menu.get_or_create_menu(segment_class, segment_name)
+            segment_class_menu = segment_menu.get_or_create_menu(segment_class_name, segment_name)
 
-            for config in pool[segment_class]['CONFIGURATIONS']:
-                overrides = pool[segment_class]['CONFIGURATIONS'][config]['OVERRIDES']
+            for config_str, config in segment_class['CONFIGURATIONS']:
+                overrides = config['OVERRIDES']
 
                 if user.username in overrides:
                     # TODO: investigate how we can eliminate all this casting to ints.
@@ -58,7 +59,7 @@ class SegmentToolbar(CMSToolbar):
                 else:
                     user_override = SegmentOverride.NoOverride
 
-                config_menu = SubMenu(config, csrf_token)
+                config_menu = SubMenu(config_str, csrf_token)
                 segment_class_menu.add_item(config_menu)
 
                 for override_label, override in [(_('Forced Active'), SegmentOverride.ForcedActive), (_('Forced Inactive'), SegmentOverride.ForcedInactive)]:
@@ -66,8 +67,8 @@ class SegmentToolbar(CMSToolbar):
                         override_label,
                         action=reverse('admin:set_segment_override'),
                         data={
-                            'segment_class': segment_class,
-                            'segment_config': config,
+                            'segment_class': segment_class_name,
+                            'segment_config': config_str,
                             'override': override if (override != user_override) else SegmentOverride.NoOverride,
                         },
                         active=bool(override == user_override),

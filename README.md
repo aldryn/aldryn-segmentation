@@ -53,10 +53,6 @@ This is a list of known issues that are being worked on...
 - [ ] The toolbar menu doesn't indicate which branches have active overrides
       (limitation of CMS!)
 
-### Other
-- [ ] Need proper alpha-sorting of top-level of Segment toolbar menu whilst
-      respecting i18n.
-
 
 Installation
 ------------
