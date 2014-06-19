@@ -173,6 +173,9 @@ class CountrySegmentPluginModel(SegmentBasePluginModel):
     # "AP" will only affect a small portion of IP addresses. Instead, you should
     # list the countries you want to block/re- direct individually.
     #
+    # TODO: Move this and related bits to a new repo.
+    # TODO: How do we make this internationalized?
+    #
     COUNTRY_CODES = [
         (u'A1', u'Anonymous Proxy'),
         (u'A2', u'Satellite Provider'),
