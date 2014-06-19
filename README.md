@@ -12,7 +12,7 @@ Development Status
 - [x] Segment by Switch (hard switch)
 - [x] Segment by Cookie
 - [x] Segment by Country
-- [ ] Segment by Auth
+- [x] Segment by Auth Status (is authenticated)
 - [x] Overridable
 
 ### Segment Pool:

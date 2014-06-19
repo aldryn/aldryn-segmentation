@@ -442,19 +442,11 @@ class CountrySegmentPluginModel(SegmentBasePluginModel):
         return u'%s (%s)' % (self.country_code_names[self.country_code], self.country_code)
 
 
-# class AuthSegmentPluginModel(SegmentBasePluginModel):
+class AuthenticatedSegmentPluginModel(SegmentBasePluginModel):
 
-#     group = models.CharField(_('Authentication Group?'),
-#         default=True,
-#         help_text=_('Uncheck to always hide child plugins.'),
-#     )
-
-#     @property
-#     def configuration_string(self):
-#         if self.on_off:
-#             return u'Always ON'
-#         else:
-#             return u'Always OFF'
+    @property
+    def configuration_string(self):
+        return u'Is Authenticated'
 
 
 class Segment(models.Model):
