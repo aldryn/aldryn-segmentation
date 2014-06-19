@@ -38,6 +38,7 @@ Development Status
 
 ### Other:
 - [ ] Move the Country Segment and its related bits to another repo?
+- [ ] Need to ensure works on all supported Djangos and Pythons
 
 
 Known Issues
@@ -48,13 +49,11 @@ This is a list of known issues that are being worked on...
 ### Critical
 - [ ] !!! segment_pool is a system-wide singleton, so, multiple operators
       would be affecting one another with overrides.
-- [ ] ! There appears to be a csrf_token conflict of some sort.
+- [ ] !!! There appears to be a csrf_token conflict of some sort.
 
 ### Important
 - [ ] The toolbar menu doesn't indicate which branches have active overrides
       (limitation of CMS!)
-- [ ] Deleted segment plugins on clipboard may be bypassing the delete() code
-      in the instances. Need to verify.
 
 ### Other
 - [ ] Need proper alpha-sorting of top-level of Segment toolbar menu whilst
