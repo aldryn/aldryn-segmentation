@@ -4,7 +4,6 @@ from setuptools import setup, find_packages
 from segmentation import __version__
 
 REQUIREMENTS = [
-    'sortedcontainers',
 ]
 
 CLASSIFIERS = [

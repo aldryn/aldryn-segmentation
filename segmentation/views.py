@@ -17,14 +17,8 @@ def set_segment_override(request):
     segment_class = request.POST.get('segment_class', None)
     segment_config = request.POST.get('segment_config', None)
     override = request.POST.get('override', None)
-    value = request.POST.get('value', None)
 
-    if value in ['True', 'true', '1', 'yes']:
-        value = True
-    else:
-        value = False
-
-    segment_pool.set_override(request.user, segment_class, segment_config, override, value)
+    segment_pool.set_override(request.user, segment_class, segment_config, override)
     return HttpResponse(force_unicode(_("The segment override was successfully changed.")))
 
 

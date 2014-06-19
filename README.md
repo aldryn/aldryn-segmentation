@@ -32,6 +32,8 @@ Development Status
 ### Tests:
 - [ ] Segment Pool tests
 - [ ] Segment logic tests
+- [ ] I18N tests
+- [ ] Multiple operator tests
 
 ### Documentation:
 - [ ] Operator's guide
@@ -46,9 +48,6 @@ Known Issues
 ------------
 
 This is a list of known issues that are being worked on...
-
-### Critical
-- [ ] !!! There appears to be a csrf_token conflict of some sort.
 
 ### Important
 - [ ] The toolbar menu doesn't indicate which branches have active overrides

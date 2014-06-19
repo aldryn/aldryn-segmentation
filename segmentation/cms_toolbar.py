@@ -3,20 +3,27 @@
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
+from cms.toolbar_base import CMSToolbar
+from cms.toolbar_pool import toolbar_pool
 from cms.toolbar.items import SubMenu, Break, AjaxItem
 
-from ..segment_pool import segment_pool, SegmentOverride
+from .segment_pool import segment_pool, SegmentOverride
 
 
-class SegmentationToolbarMiddleware(object):
 
-    def process_request(self, request):
-        if hasattr(request, 'toolbar') and hasattr(request, 'user'):
-            self.create_segmentation_menu(request.user, request.toolbar, csrf_token=request.COOKIES.get('csrftoken'))
+@toolbar_pool.register
+class SegmentToolbar(CMSToolbar):
+
+    def populate(self):
+
+        self.create_segmentation_menu(
+            self.request.user,
+            self.request.toolbar,
+            csrf_token=self.request.COOKIES.get('csrftoken')
+        )
 
 
-    # TODO: Won't this all work in a cms_toolbar.py file rather than in MW?
-    # TODO: We should move pool-implementation-specific logic back to the pool.
+    # TODO: We should move pool-implementation-specific logic back to the pool?
     def create_segmentation_menu(self, user, toolbar, csrf_token):
         '''
         Using the SegmentPool, create a segmentation menu.
@@ -55,15 +62,13 @@ class SegmentationToolbarMiddleware(object):
                 segment_class_menu.add_item(config_menu)
 
                 for override_label, override in [(_('Forced Active'), SegmentOverride.ForcedActive), (_('Forced Inactive'), SegmentOverride.ForcedInactive)]:
-
                     config_menu.add_ajax_item(
                         override_label,
                         action=reverse('admin:set_segment_override'),
                         data={
                             'segment_class': segment_class,
                             'segment_config': config,
-                            'override': override,
-                            'value': (override != user_override),
+                            'override': override if (override != user_override) else SegmentOverride.NoOverride,
                         },
                         active=bool(override == user_override),
                         on_success=toolbar.REFRESH_PAGE

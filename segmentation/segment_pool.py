@@ -3,11 +3,10 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
+from django.utils.translation import get_language
 
 from cms.exceptions import PluginAlreadyRegistered, PluginNotRegistered
 from cms.plugin_pool import plugin_pool
-
-from sortedcontainers import SortedDict
 
 from .cms_plugins import SegmentPluginBase
 from .models import SegmentBasePluginModel
@@ -24,14 +23,17 @@ class SegmentOverride:
 
 class SegmentPool(object):
     '''
-    This maintains a sorted dict of sorted dict of list of segment plugin
-    instances in the form:
+    This maintains a set of nested sorted dicts containing, among other
+    attributes, a list of segment plugin instances in the form:
 
     segments = {
         /class/ : {
-            'NAME': /name/,
+            'NAME': _(/name/),
             'CONFIGURATIONS': {
-                /configuration_string/ : {
+                #
+                # NOTE: This *key* may be a ugettext proxy object!
+                #
+                _(/configuration_string/) : {
                     'OVERRIDES': {
                         /user.id/: /SegmentOverride enum value/,
                         ...
@@ -50,21 +52,24 @@ class SegmentPool(object):
     '''
 
     def __init__(self):
-        self.segments = SortedDict()
-        self._sorted_segments = None
+        self.segments = dict()
+        # TODO: wrap this shadow dict of dicts into an abstraction layer?
+        self._sorted_segments = dict()
         self.discover()
 
 
     def discover(self):
         '''
-        Find and register any SegmentPlugins already configured in the CMS and register them...
+        Find and register any SegmentPlugins already configured in the CMS and
+        register them...
         '''
 
         for plugin_class in plugin_pool.get_all_plugins():
             #
             # NOTE: We're not looking for ducks here. Should we be?
             #
-            if issubclass(plugin_class, SegmentPluginBase) and plugin_class.allow_overrides:
+            if (issubclass(plugin_class, SegmentPluginBase) and
+                    plugin_class.allow_overrides):
                 for plugin_instance in plugin_class.model.objects.all():
                     self.register_segment_plugin(plugin_instance)
 
@@ -72,8 +77,16 @@ class SegmentPool(object):
     def register_segment_plugin(self, plugin_instance):
         '''
         Registers the provided plugin_instance into the SegmentPool.
+        Raises:
+            PluginAlreadyRegistered: if the plugin is already registered and
+            ImproperlyConfigured: if not an appropriate type of plugin.
         '''
+
         plugin_class_instance = plugin_instance.get_plugin_class_instance()
+
+        #
+        # TODO: Consider looking for ducks instead of instances.
+        #
         if isinstance(plugin_class_instance, SegmentPluginBase):
 
             plugin_class_name = plugin_class_instance.__class__.__name__
@@ -95,32 +108,38 @@ class SegmentPool(object):
                 self.segments.update({
                     plugin_class_name: {
                         'NAME': plugin_name,    
-                        'CONFIGURATIONS': SortedDict(),
+                        'CONFIGURATIONS': dict(),
                     }
                 })
-                self._sorted_segments = None
+                self._sorted_segments = dict()
             segment_class = self.segments[plugin_class_name]
 
             plugin_config = plugin_instance.configuration_string
             segment_configs = segment_class['CONFIGURATIONS']
 
+            #
+            # NOTE: Even though plugin_config is a ugettext object, it should
+            # still match, regardless of language, because ugettext is magic.
+            #
             if plugin_config not in segment_configs:
                 segment_configs.update( { plugin_config: dict() } )
-                self._sorted_segments = None
-            segment_config = segment_configs[plugin_config]
+                self._sorted_segments = dict()
+            segment = segment_configs[plugin_config]
 
-            if len(segment_config) == 0:
-                segment_config['OVERRIDES'] = dict()
-                segment_config['INSTANCES'] = list()
-                self._sorted_segments = None
+            if len(segment) == 0:
+                segment['OVERRIDES'] = dict()
+                segment['INSTANCES'] = list()
+                self._sorted_segments = dict()
 
-            if plugin_instance not in segment_config['INSTANCES']:
-                segment_config['INSTANCES'].append( plugin_instance )
-                self._sorted_segments = None
+            if plugin_instance not in segment['INSTANCES']:
+                segment['INSTANCES'].append( plugin_instance )
+                self._sorted_segments = dict()
             else:
-                raise PluginAlreadyRegistered('The segment plugin (%r) cannot be registered because it already is.' % plugin_instance)
+                raise PluginAlreadyRegistered('The segment plugin (%r) cannot '
+                    'be registered because it already is.' % plugin_instance)
         else:
-            raise ImproperlyConfigured('Segment Plugins must subclasses of SegmentPluginBase. %r is not.' % plugin_class_instance)
+            raise ImproperlyConfigured('Segment Plugins must subclasses of '
+                'SegmentPluginBase. %r is not.' % plugin_class_instance)
 
 
     def unregister_segment_plugin(self, plugin_instance):
@@ -137,7 +156,8 @@ class SegmentPool(object):
         plugin_class_instance = plugin_instance.get_plugin_class_instance()
         
         if not isinstance(plugin_class_instance, SegmentPluginBase):
-            raise ImproperlyConfigured('Segment Plugins must subclasses of SegmentPluginBase. %r is not.' % plugin_class_instance)
+            raise ImproperlyConfigured('Segment Plugins must subclasses of '
+                'SegmentPluginBase. %r is not.' % plugin_class_instance)
         else:
             plugin_class_name = plugin_class_instance.__class__.__name__
 
@@ -148,7 +168,7 @@ class SegmentPool(object):
                     if plugin_instance in data['INSTANCES']:
                         # Found it! Now remove it...
                         data['INSTANCES'].remove(plugin_instance)
-                        self._sorted_segments = None
+                        self._sorted_segments = dict()
 
                         # Clean-up any empty elements caused by this removal...
                         if len(data['INSTANCES']) == 0:
@@ -160,51 +180,22 @@ class SegmentPool(object):
                                 del self.segments[plugin_class_name]
 
                         return
-        raise PluginNotRegistered('The segment plugin (%r) cannot be unregistered because it is not currently registered in the SegmentPool. (#1)' % plugin_instance)
+        raise PluginNotRegistered('The segment plugin (%r) cannot be '
+            'unregistered because it is not currently registered in the '
+            'SegmentPool. (#1)' % plugin_instance)
 
 
-    def get_registered_segments(self):
-        '''
-        Returns the SegmentPool sorted appropriately for human consumption.
-        '''
-
-        #
-        # NOTE: Due to our use of sortedcontainers.SortedDict(), the
-        # 'configurations' sub-struct is already sorted alphabetically which
-        # is useful for proper presentation in menus.
-        #
-        # The outermost dict is also a SortedDict, because we need it to
-        # retain a sort, but not necessarily an automatic one. We need it to
-        # be sorted by the 'name' item within, not the key itself. This is
-        # easy and quick to do with Python, but, we don't need/want to do this
-        # unless necessary, since this will be called for every request during
-        # an operator's session.
-        #
-
-        if not self._sorted_segments:
-            self._sorted_segments = self.segments
-            # TODO: How to sort this properly!
-
-        return self._sorted_segments
-
-    #
-    # TODO: Should we even have a value param? Eliminate it.
-    # TODO: Once the value param is removed, then, just remove entries that
-    #       are set to 0
-    def set_override(self, user, segment_class, segment_config, override, value=True):
+    def set_override(self, user, segment_class, segment_config, override):
         '''
         (Re-)Set an override on a segment (segment_class x segment_config).
         '''
 
         overrides = self.segments[segment_class]['CONFIGURATIONS'][segment_config]['OVERRIDES']
-
-        if not user.username in overrides:
-            overrides[user.username] = dict()
-
-        if value:
-            overrides[user.username] = override
+        if override == SegmentOverride.NoOverride:
+            del overrides[user.username]
         else:
-            overrides[user.username] = SegmentOverride.NoOverride
+            overrides[user.username] = override
+        self._sorted_segments = dict()
 
 
     def reset_all_segment_overrides(self, user):
@@ -217,15 +208,41 @@ class SegmentPool(object):
                 for username, override in configuration['OVERRIDES'].iteritems():
                     if username == user.username:
                         configuration['OVERRIDES'][username] = SegmentOverride.NoOverride
+        self._sorted_segments = dict()
 
 
+    def get_registered_segments(self):
+        '''
+        Returns the SegmentPool sorted appropriately for human consumption in
+        the current language. This means that the _('name') value should
+        determine the sort order of the outer dict and the _('segment_config')
+        key should determine the order of the inner dicts. In both cases, the
+        keys need to be compared in the provided language.
+
+        Further note that the current language is given by get_language() and
+        that this will reflect the CMS operator's user settings, NOT the current
+        PAGE language.
+        '''
+
+        lang = get_language()
+        if not lang in self._sorted_segments:
+            # TODO: How to sort this properly!
+            self._sorted_segments[lang] = self.segments
+
+        return self._sorted_segments[lang]
+
+
+    #
+    # TODO: I don't like this int-casting used here or anywhere.
+    #
     def get_override_for_segment(self, user, segment_class, segment_config):
         '''
         Given a specific segment/configuration, return the current override.
         '''
+        overrides = self.segments[segment_class]['CONFIGURATIONS'][segment_config]['OVERRIDES']
 
-        if user.username in self.segments[segment_class]['CONFIGURATIONS'][segment_config]['OVERRIDES']:
-            return int(self.segments[segment_class]['CONFIGURATIONS'][segment_config]['OVERRIDES'][user.username])
+        if user.username in overrides:
+            return int(overrides[user.username])
         else:
             return SegmentOverride.NoOverride
 
@@ -242,22 +259,22 @@ def register_segment(sender, instance, created, **kwargs):
 
     from .segment_pool import segment_pool
 
-    if isinstance(instance, SegmentBasePluginModel):
-        allow_overrides = instance.get_plugin_class_instance().allow_overrides
-
+    #
+    # TODO: Should we be looking for ducks?
+    #
+    if isinstance(instance, SegmentBasePluginModel) and instance.get_plugin_class_instance().allow_overrides:
         # If this isn't a new plugin, then we need to unregister first.
-        if not created and allow_overrides:
+        if not created:
             try:
                 segment_pool.unregister_segment_plugin(instance)
             except PluginNotRegistered:
                 pass
 
         # Either way, we register it.
-        if allow_overrides:
-            try:
-                segment_pool.register_segment_plugin(instance)
-            except PluginAlreadyRegistered:
-                pass
+        try:
+            segment_pool.register_segment_plugin(instance)
+        except PluginAlreadyRegistered:
+            pass
 
 
 @receiver(pre_delete)
