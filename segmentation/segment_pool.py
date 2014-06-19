@@ -10,6 +10,7 @@ from cms.plugin_pool import plugin_pool
 from sortedcontainers import SortedDict
 
 from .cms_plugins import SegmentPluginBase
+from .models import SegmentBasePluginModel
 
 
 #
@@ -209,7 +210,7 @@ def register_segment(sender, instance, created, **kwargs):
 
     from .segment_pool import segment_pool
 
-    if isinstance(instance, 'SegmentBasePluginModel'):
+    if isinstance(instance, SegmentBasePluginModel):
         allow_overrides = instance.get_plugin_class_instance().allow_overrides
 
         # If this isn't a new plugin, then we need to unregister first.
@@ -236,7 +237,7 @@ def unregister_segment(sender, instance, **kwargs):
 
     from .segment_pool import segment_pool
 
-    if isinstance(instance, 'SegmentBasePluginModel'):
+    if isinstance(instance, SegmentBasePluginModel):
         plugin_class = instance.get_plugin_class_instance()
 
         if plugin_class.allow_overrides:
