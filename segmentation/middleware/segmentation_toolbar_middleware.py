@@ -15,6 +15,9 @@ class SegmentationToolbarMiddleware(object):
             self.create_segmentation_menu(request.toolbar, csrf_token=request.COOKIES.get('csrftoken'))
 
 
+    # TODO: Add support for operator-specific overrides
+    # TODO: Won't this all work in a cms_toolbar.py file rather than in MW?
+    # TODO: We should move pool-implementation-specific logic back to the pool.
     def create_segmentation_menu(self, toolbar, csrf_token):
         '''
         Using the SegmentPool, create a segmentation menu.
@@ -27,8 +30,8 @@ class SegmentationToolbarMiddleware(object):
         #
         num_overrides = 0
         for segment_class in pool.itervalues():
-            for config in segment_class['configurations'].itervalues():
-                override_state = int(config['override'])
+            for config in segment_class['CONFIGURATIONS'].itervalues():
+                override_state = int(config['OVERRIDES'])
                 if override_state != SegmentOverride.NoOverride:
                     num_overrides += 1
 
@@ -36,12 +39,12 @@ class SegmentationToolbarMiddleware(object):
         segment_menu = toolbar.get_or_create_menu('segmentation-menu', segment_menu_name)
 
         for segment_class in pool:
-            segment_name = pool[segment_class]['name']
+            segment_name = pool[segment_class]['NAME']
 
             segment_class_menu = segment_menu.get_or_create_menu(segment_class, segment_name)
 
-            for config in pool[segment_class]['configurations']:
-                override_state = int(pool[segment_class]['configurations'][config]['override'])
+            for config in pool[segment_class]['CONFIGURATIONS']:
+                override_state = int(pool[segment_class]['CONFIGURATIONS'][config]['OVERRIDES'])
 
                 config_menu = SubMenu(config, csrf_token)
                 segment_class_menu.add_item(config_menu)

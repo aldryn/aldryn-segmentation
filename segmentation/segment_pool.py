@@ -27,16 +27,26 @@ class SegmentPool(object):
 
     segments = {
         /class/ : {
-            'name': /name/,
-            'configurations': {
+            'NAME': /name/,
+            'CONFIGURATIONS': {
                 /configuration_string/ : {
-                    'override': /SegmentOverride enum value/,
-                    'instances': [ ... ]
+                    'OVERRIDES': {
+                        /user.id/: /SegmentOverride enum value/,
+                        ...
+                    },
+                    'INSTANCES': [ ... ]
                 }
             }
         }
     }
+
+    Although this is implmented as a non-persistent, system-wide singleton, it
+    is shared by all operators of the system. In order to keep them from
+    setting overrides against each other, we need to be able to store per-
+    operator overrides. We do this by keying the overrides with the user id of
+    the operator who created it.
     '''
+
     def __init__(self):
         self.segments = SortedDict()
         self._sorted_segments = None
@@ -53,6 +63,7 @@ class SegmentPool(object):
                 for plugin_instance in plugin_class.model.objects.all():
                     self.register_segment_plugin(plugin_instance)
 
+    # TODO: Add support for operator-specific overrides
     def register_segment_plugin(self, plugin_instance):
         '''
         Registers the provided plugin_instance into the SegmentPool.
@@ -78,15 +89,15 @@ class SegmentPool(object):
                 #
                 self.segments.update({
                     plugin_class_name: {
-                        'name': plugin_name,    
-                        'configurations': SortedDict(),
+                        'NAME': plugin_name,    
+                        'CONFIGURATIONS': SortedDict(),
                     }
                 })
                 self._sorted_segments = None
             segment_class = self.segments[plugin_class_name]
 
             plugin_config = plugin_instance.configuration_string
-            segment_configs = segment_class['configurations']
+            segment_configs = segment_class['CONFIGURATIONS']
 
             if plugin_config not in segment_configs:
                 segment_configs.update( { plugin_config: dict() } )
@@ -94,12 +105,12 @@ class SegmentPool(object):
             segment_config = segment_configs[plugin_config]
 
             if len(segment_config) == 0:
-                segment_config['override'] = SegmentOverride.NoOverride
-                segment_config['instances'] = list()
+                segment_config['OVERRIDES'] = SegmentOverride.NoOverride
+                segment_config['INSTANCES'] = list()
                 self._sorted_segments = None
 
-            if plugin_instance not in segment_config['instances']:
-                segment_config['instances'].append( plugin_instance )
+            if plugin_instance not in segment_config['INSTANCES']:
+                segment_config['INSTANCES'].append( plugin_instance )
                 self._sorted_segments = None
             else:
                 raise PluginAlreadyRegistered('The segment plugin (%r) cannot be registered because it already is.' % plugin_instance)
@@ -107,6 +118,7 @@ class SegmentPool(object):
             raise ImproperlyConfigured('Segment Plugins must subclasses of SegmentPluginBase. %r is not.' % plugin_class_instance)
 
 
+    # TODO: Add support for operator-specific overrides
     def unregister_segment_plugin(self, plugin_instance):
         '''
         Removes the given plugin from the SegmentPool.
@@ -127,21 +139,21 @@ class SegmentPool(object):
 
             if plugin_class_name in self.segments:
                 segment_class = self.segments[plugin_class_name]
-                segment_configs = segment_class['configurations']
+                segment_configs = segment_class['CONFIGURATIONS']
                 for configuration, data in segment_configs.iteritems():
-                    if plugin_instance in data['instances']:
+                    if plugin_instance in data['INSTANCES']:
                         # Found it! Now remove it...
-                        data['instances'].remove(plugin_instance)
+                        data['INSTANCES'].remove(plugin_instance)
                         self._sorted_segments = None
 
                         # Clean-up any empty elements caused by this removal...
-                        if len(data['instances']) == 0:
+                        if len(data['INSTANCES']) == 0:
                             # OK, this was the last one, so...
                             del segment_configs[configuration]
 
                             if len(segment_configs) == 0:
                                 # This too was the last one
-                                self.segments.remove(plugin_class_name)
+                                del self.segments[plugin_class_name]
 
                         return
         raise PluginNotRegistered('The segment plugin (%r) cannot be unregistered because it is not currently registered in the SegmentPool. (#1)' % plugin_instance)
@@ -164,38 +176,41 @@ class SegmentPool(object):
         # unless necessary, since this will be called for every request during
         # an operator's session.
         #
+
         if not self._sorted_segments:
             self._sorted_segments = self.segments
             # TODO: How to sort this properly!
 
         return self._sorted_segments
 
-
+    # TODO: Add support for operator-specific overrides
     def set_override(self, segment_class, segment_config, override, value=True):
         '''
         (Re-)Set an override on a segment (segment_class x segment_config).
         '''
 
         if value:
-            self.segments[segment_class]['configurations'][segment_config]['override'] = override
+            self.segments[segment_class]['CONFIGURATIONS'][segment_config]['OVERRIDES'] = override
         else:
-            self.segments[segment_class]['configurations'][segment_config]['override'] = SegmentOverride.NoOverride
+            self.segments[segment_class]['CONFIGURATIONS'][segment_config]['OVERRIDES'] = SegmentOverride.NoOverride
 
 
+    # TODO: Add support for operator-specific overrides
     def reset_all_segment_overrides(self):
         '''
         Resets (disables) the overrides for all segments.
         '''
         for segment_class in self.segments.itervalues():
-            for configuration in segment_class['configurations'].itervalues():
-                configuration['override'] = SegmentOverride.NoOverride
+            for configuration in segment_class['CONFIGURATIONS'].itervalues():
+                configuration['OVERRIDES'] = SegmentOverride.NoOverride
 
+    # TODO: Add support for operator-specific overrides
     def get_override_for_segment(self, segment_class, segment_config):
         '''
         Given a specific segment/configuration, return the current override.
         '''
 
-        return int(self.segments[segment_class]['configurations'][segment_config]['override'])
+        return int(self.segments[segment_class]['CONFIGURATIONS'][segment_config]['OVERRIDES'])
 
 
 segment_pool = SegmentPool()
