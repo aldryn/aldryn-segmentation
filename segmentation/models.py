@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from operator import itemgetter
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from cms.models import CMSPlugin
 
+from cms.models import CMSPlugin
 
 #
 # NOTE: The SegmentLimitPluginModel does NOT subclass SegmentBasePluginModel
@@ -428,9 +430,13 @@ class CountrySegmentPluginModel(SegmentBasePluginModel):
         (u'ZW', u'Zimbabwe'),
     ]
 
+    # Just sort the list alphabetically by country name
+    COUNTRY_CODES.sort(key=itemgetter(1))
+
+    # This is so we can perform look-ups too.
     country_code_names = dict(COUNTRY_CODES)
 
-    country_code = models.CharField(_('country code'),
+    country_code = models.CharField(_('country'),
         blank=False,
         choices=COUNTRY_CODES,
         default='O1',  # 'Other Country'
