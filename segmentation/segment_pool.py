@@ -88,41 +88,22 @@ class SegmentPool(object):
         # TODO: Consider looking for ducks instead of instances.
         #
         if isinstance(plugin_class_instance, SegmentPluginBase):
-
             plugin_class_name = plugin_class_instance.__class__.__name__
             plugin_name = plugin_class_instance.name
 
             if plugin_class_name not in self.segments:
-
-                #
-                # NOTE: We're using a sortedcontainers.SortedDict here for the
-                # configurations dict. This shifts the burden of sorting to
-                # add/remove operations rather than when it is read, which is
-                # appropriate for this implementation.
-                #
-                # We do not use a SortedDict for the outer-most dict because
-                # we'll be sorting that on one of the values (name), rather
-                # than the keys. Plus, this should be much faster to sort
-                # anyway.
-                #
-                self.segments.update({
-                    plugin_class_name: {
-                        'NAME': plugin_name,    
-                        'CONFIGURATIONS': dict(),
-                    }
-                })
+                self.segments[plugin_class_name] = {
+                    'NAME': plugin_name,    
+                    'CONFIGURATIONS': dict(),
+                }
                 self._sorted_segments = dict()
             segment_class = self.segments[plugin_class_name]
 
             plugin_config = plugin_instance.configuration_string
             segment_configs = segment_class['CONFIGURATIONS']
 
-            #
-            # NOTE: Even though plugin_config is a ugettext object, it should
-            # still match, regardless of language, because ugettext is magic.
-            #
             if plugin_config not in segment_configs:
-                segment_configs.update( { plugin_config: dict() } )
+                segment_configs[plugin_config] =  dict()
                 self._sorted_segments = dict()
             segment = segment_configs[plugin_config]
 
