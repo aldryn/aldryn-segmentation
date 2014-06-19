@@ -3,6 +3,7 @@
 from django.utils.translation import ugettext_lazy as _
 from cms.plugin_base import CMSPluginBase
 
+
 class SegmentPluginBase(CMSPluginBase):
     '''
     Abstract base class to be used for all segment plugins. It provides the
@@ -33,7 +34,7 @@ class SegmentPluginBase(CMSPluginBase):
     allow_overrides = True
 
 
-    def get_segment_override(self, instance):
+    def get_segment_override(self, context, instance):
         '''
         If this segment plugin allows overrides, then return the current
         override for this segment, else, returns SegmentOverride.NoOverride.
@@ -44,9 +45,9 @@ class SegmentPluginBase(CMSPluginBase):
         from ..segment_pool import segment_pool, SegmentOverride
 
         if self.allow_overrides and hasattr(instance, 'configuration_string'):
-            return segment_pool.get_override_for_segment(self.__class__.__name__, instance.configuration_string)
-        else:
-            SegmentOverride.NoOverride
+            return segment_pool.get_override_for_segment(context['request'].user, self.__class__.__name__, instance.configuration_string)
+
+        return SegmentOverride.NoOverride
 
 
     def is_context_appropriate(self, context, instance):

@@ -21,6 +21,7 @@ Development Status
 - [x] Discovery
 - [x] Get override state for segment
 - [x] Reset all overrides
+- [x] Supports multiple operators
 
 ### Toolbar:
 - [x] Displays
@@ -47,8 +48,6 @@ Known Issues
 This is a list of known issues that are being worked on...
 
 ### Critical
-- [ ] !!! segment_pool is a system-wide singleton, so, multiple operators
-      would be affecting one another with overrides.
 - [ ] !!! There appears to be a csrf_token conflict of some sort.
 
 ### Important

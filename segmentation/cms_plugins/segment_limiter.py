@@ -66,7 +66,7 @@ class SegmentLimitPlugin(SegmentPluginBase):
                     #
                     if hasattr(child_plugin, 'allow_overrides') and child_plugin.allow_overrides and hasattr(child_plugin, 'get_segment_override'):
 
-                        override = child_plugin.get_segment_override(child_instance)
+                        override = child_plugin.get_segment_override(context, child_instance)
 
                         if override == SegmentOverride.ForcedActive:
                             child = (child_instance, True)

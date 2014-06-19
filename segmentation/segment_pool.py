@@ -12,6 +12,8 @@ from sortedcontainers import SortedDict
 from .cms_plugins import SegmentPluginBase
 from .models import SegmentBasePluginModel
 
+import logging
+logger = logging.getLogger(__name__)
 
 #
 # A simple enum for Python's < 3.4.
@@ -55,15 +57,18 @@ class SegmentPool(object):
 
     def discover(self):
         '''
-        Find and register any SegmentPlugins already configured...
+        Find and register any SegmentPlugins already configured in the CMS and register them...
         '''
 
         for plugin_class in plugin_pool.get_all_plugins():
+            #
+            # NOTE: We're not looking for ducks here. Should we be?
+            #
             if issubclass(plugin_class, SegmentPluginBase) and plugin_class.allow_overrides:
                 for plugin_instance in plugin_class.model.objects.all():
                     self.register_segment_plugin(plugin_instance)
 
-    # TODO: Add support for operator-specific overrides
+
     def register_segment_plugin(self, plugin_instance):
         '''
         Registers the provided plugin_instance into the SegmentPool.
@@ -105,7 +110,7 @@ class SegmentPool(object):
             segment_config = segment_configs[plugin_config]
 
             if len(segment_config) == 0:
-                segment_config['OVERRIDES'] = SegmentOverride.NoOverride
+                segment_config['OVERRIDES'] = dict()
                 segment_config['INSTANCES'] = list()
                 self._sorted_segments = None
 
@@ -118,7 +123,6 @@ class SegmentPool(object):
             raise ImproperlyConfigured('Segment Plugins must subclasses of SegmentPluginBase. %r is not.' % plugin_class_instance)
 
 
-    # TODO: Add support for operator-specific overrides
     def unregister_segment_plugin(self, plugin_instance):
         '''
         Removes the given plugin from the SegmentPool.
@@ -183,34 +187,47 @@ class SegmentPool(object):
 
         return self._sorted_segments
 
-    # TODO: Add support for operator-specific overrides
-    def set_override(self, segment_class, segment_config, override, value=True):
+    #
+    # TODO: Should we even have a value param? Eliminate it.
+    # TODO: Once the value param is removed, then, just remove entries that
+    #       are set to 0
+    def set_override(self, user, segment_class, segment_config, override, value=True):
         '''
         (Re-)Set an override on a segment (segment_class x segment_config).
         '''
 
+        overrides = self.segments[segment_class]['CONFIGURATIONS'][segment_config]['OVERRIDES']
+
+        if not user.username in overrides:
+            overrides[user.username] = dict()
+
         if value:
-            self.segments[segment_class]['CONFIGURATIONS'][segment_config]['OVERRIDES'] = override
+            overrides[user.username] = override
         else:
-            self.segments[segment_class]['CONFIGURATIONS'][segment_config]['OVERRIDES'] = SegmentOverride.NoOverride
+            overrides[user.username] = SegmentOverride.NoOverride
 
 
-    # TODO: Add support for operator-specific overrides
-    def reset_all_segment_overrides(self):
+    def reset_all_segment_overrides(self, user):
         '''
         Resets (disables) the overrides for all segments.
         '''
+
         for segment_class in self.segments.itervalues():
             for configuration in segment_class['CONFIGURATIONS'].itervalues():
-                configuration['OVERRIDES'] = SegmentOverride.NoOverride
+                for username, override in configuration['OVERRIDES'].iteritems():
+                    if username == user.username:
+                        configuration['OVERRIDES'][username] = SegmentOverride.NoOverride
 
-    # TODO: Add support for operator-specific overrides
-    def get_override_for_segment(self, segment_class, segment_config):
+
+    def get_override_for_segment(self, user, segment_class, segment_config):
         '''
         Given a specific segment/configuration, return the current override.
         '''
 
-        return int(self.segments[segment_class]['CONFIGURATIONS'][segment_config]['OVERRIDES'])
+        if user.username in self.segments[segment_class]['CONFIGURATIONS'][segment_config]['OVERRIDES']:
+            return int(self.segments[segment_class]['CONFIGURATIONS'][segment_config]['OVERRIDES'][user.username])
+        else:
+            return SegmentOverride.NoOverride
 
 
 segment_pool = SegmentPool()

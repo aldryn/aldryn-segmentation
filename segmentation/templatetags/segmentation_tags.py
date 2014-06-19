@@ -32,7 +32,7 @@ class RenderSegmentPlugin(InclusionTag):
             # This is a segment plugin... or at least quacks like one.
             #
             if child_plugin.allow_overrides and hasattr(child_plugin, 'get_segment_override'):
-                override = child_plugin.get_segment_override(plugin_instance)
+                override = child_plugin.get_segment_override(context, plugin_instance)
                 
                 if override == SegmentOverride.ForcedActive:
                     return True

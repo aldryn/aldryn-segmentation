@@ -24,7 +24,7 @@ def set_segment_override(request):
     else:
         value = False
 
-    segment_pool.set_override(segment_class, segment_config, override, value)
+    segment_pool.set_override(request.user, segment_class, segment_config, override, value)
     return HttpResponse(force_unicode(_("The segment override was successfully changed.")))
 
 
@@ -33,5 +33,5 @@ def reset_all_segment_overrides(request):
     This view resets all segment overrides in one go.
     '''
 
-    segment_pool.reset_all_segment_overrides()
+    segment_pool.reset_all_segment_overrides(request.user)
     return HttpResponse(force_unicode(_("The all segment override were successfully reset.")))
