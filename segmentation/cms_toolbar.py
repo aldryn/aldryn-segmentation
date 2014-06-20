@@ -32,48 +32,58 @@ class SegmentToolbar(CMSToolbar):
         # NOTE: This is a list of tuples now...
         pool = segment_pool.get_registered_segments()
 
-        #
-        # Count the number of current overrides for this specific user...
-        #
-        num_overrides = 0
-        for segment_class_name, segment_class in pool:
-            for config_str, config in segment_class['CONFIGURATIONS']:
-                for username, override in config['OVERRIDES'].iteritems():
-                    if username == user.username and int(override):
-                        num_overrides += 1
+        overrides_list = [
+            (SegmentOverride.ForcedActive, _('Forced Active')),
+            (SegmentOverride.ForcedInactive, _('Forced Inactive'))
+        ]
+
+        num_overrides = segment_pool.get_num_overrides_for_user(user)
 
         segment_menu_name = _('Segments (%s)' % num_overrides) if num_overrides else _('Segments')
-        segment_menu = toolbar.get_or_create_menu('segmentation-menu', segment_menu_name)
+        segment_menu = toolbar.get_or_create_menu(
+            'segmentation-menu',
+            segment_menu_name
+        )
 
         for segment_class_name, segment_class in pool:
             segment_name = segment_class['NAME']
 
-            segment_class_menu = segment_menu.get_or_create_menu(segment_class_name, segment_name)
+            segment_class_menu = segment_menu.get_or_create_menu(
+                segment_class_name,
+                segment_name
+            )
 
             for config_str, config in segment_class['CONFIGURATIONS']:
-                overrides = config['OVERRIDES']
 
-                if user.username in overrides:
-                    # TODO: investigate how we can eliminate all this casting to ints.
-                    user_override = int(overrides[user.username])
-                else:
-                    user_override = SegmentOverride.NoOverride
+                user_override = segment_pool.get_override_for_segment(
+                    user,
+                    segment_class_name,
+                    config_str
+                )
 
                 config_menu = SubMenu(config_str, csrf_token)
                 segment_class_menu.add_item(config_menu)
 
-                for override_label, override in [(_('Forced Active'), SegmentOverride.ForcedActive), (_('Forced Inactive'), SegmentOverride.ForcedInactive)]:
+                for override, override_label in overrides_list:
                     active = bool(override == user_override)
+
                     if active:
+                        # Mark parent menus active too
                         config_menu.active = True
                         segment_class_menu.active = True
+
+                    if (override != user_override):
+                        override_value = override
+                    else:
+                        override_value = SegmentOverride.NoOverride
+
                     config_menu.add_ajax_item(
                         override_label,
                         action=reverse('admin:set_segment_override'),
                         data={
                             'segment_class': segment_class_name,
                             'segment_config': config_str,
-                            'override': override if (override != user_override) else SegmentOverride.NoOverride,
+                            'override': override_value,
                         },
                         active=active,
                         on_success=toolbar.REFRESH_PAGE

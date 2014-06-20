@@ -29,9 +29,6 @@ class SegmentPool(object):
         /class/ : {
             'NAME': _(/name/),
             'CONFIGURATIONS': {
-                #
-                # NOTE: This *key* may be a ugettext proxy object!
-                #
                 _(/configuration_string/) : {
                     'OVERRIDES': {
                         /user.id/: /SegmentOverride enum value/,
@@ -191,6 +188,22 @@ class SegmentPool(object):
         self._sorted_segments = dict()
 
 
+    def get_num_overrides_for_user(self, user):
+        '''
+        Returns a count of the number of overrides for all segments for the
+        given user. This is used for the toolbar menu where we show the number
+        of active overrides.
+        '''
+
+        num = 0
+        for segment_class_name, segment_class in self.segments.iteritems():
+            for config_str, config in segment_class['CONFIGURATIONS'].iteritems():
+                for username, override in config['OVERRIDES'].iteritems():
+                    if username == user.username and int(override):
+                        num += 1
+        return num
+
+
     #
     # TODO: I don't like this int-casting used here or anywhere.
     #
@@ -223,24 +236,18 @@ class SegmentPool(object):
         nested dicts are now lists of tuples so that the sort can be retained.
 
         _sorted_segments = [
-            (
-                /class/,
-                {
-                    'NAME': _(/name/),
-                    'CONFIGURATIONS': [
-                        (
-                            _(/configuration_string/),
-                            {
-                                'OVERRIDES': {
-                                    /user.id/: /SegmentOverride enum value/,
-                                    ...
-                                },
-                                'INSTANCES': [ ... ]
-                            }
-                        )
-                    ]
-                }
-            )
+            (/class/, {
+                'NAME': _(/name/),
+                'CONFIGURATIONS': [
+                    (_(/configuration_string/), {
+                        'OVERRIDES': {
+                            /user.id/: /SegmentOverride enum value/,
+                            ...
+                        },
+                        'INSTANCES': [ ... ]
+                    })
+                ]
+            })
         ]
         '''
 
@@ -251,7 +258,7 @@ class SegmentPool(object):
             #
             # Sort the outer dict in the current language, convering it to a
             # list of tuples. Note, we're taking starting from a deep copy of
-            # the original pool dict.
+            # the original pool dict to prevent affecting it.
             #
             self._sorted_segments[lang] = sorted(
                 deepcopy(self.segments).items(),
