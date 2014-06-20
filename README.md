@@ -49,7 +49,7 @@ Known Issues
 
 This is a list of known issues that are being worked on...
 
-- [ ] The Segment config portion of the Segment menu isn't translationed.
+- [ ] The Segment config portion of the Segment menu isn't translated.
 
 
 Installation
