@@ -49,8 +49,8 @@ Known Issues
 
 This is a list of known issues that are being worked on...
 
-There are no known issues (under Django 1.6) at this time. If you've found
-something, please open a ticket!
+- [ ] Only a partial, French translation is available, supplied by
+      translate.google.com.
 
 
 Installation
