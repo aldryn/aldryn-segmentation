@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _, string_concat
 
 from cms.models import CMSPlugin
 
@@ -42,7 +42,7 @@ class SegmentLimitPluginModel(CMSPlugin):
         elif self.max_children == 1:
             return _('Show First')
         else:
-            return _('Show First %d' % self.max_children)
+            return string_concat(_('Show First'), ' ', self.max_children)
 
 
     def __str__(self):
@@ -165,10 +165,7 @@ class CookieSegmentPluginModel(SegmentBasePluginModel):
 
     @property
     def configuration_string(self):
-        return _('“%(key)s” equals “%(value)s”' % {
-            'key': self.cookie_key,
-            'value': self.cookie_value,
-        })
+        return string_concat('“', self.cookie_key, '”', _(' equals '), '“', self.cookie_value, '”')
 
 
 class CountrySegmentPluginModel(SegmentBasePluginModel):
@@ -446,9 +443,10 @@ class CountrySegmentPluginModel(SegmentBasePluginModel):
 
     #
     # Since the user's locale may make these country names in non-alpha order,
-    # We prepend the country code to the country name string.
+    # We prepend the country code to the country name string for the field
+    # choices.
     #
-    COUNTRY_CODES = [ (code, _('%(code)s: %(name)s') % {
+    COUNTRY_CODES_CHOICES = [ (code, _('%(code)s: %(name)s') % {
         'code': code, 'name': name
     }) for (code, name) in COUNTRY_CODES ]
 
@@ -457,17 +455,14 @@ class CountrySegmentPluginModel(SegmentBasePluginModel):
 
     country_code = models.CharField(_('country'),
         blank=False,
-        choices=COUNTRY_CODES,
+        choices=COUNTRY_CODES_CHOICES,
         default='O1',  # 'Other Country'
         max_length=2,
     )
 
     @property
     def configuration_string(self):
-        return _('%(name)s (%(code)s)' % {
-            'name': self.country_code_names[self.country_code],
-            'code': self.country_code,
-        })
+        return string_concat(self.country_code_names[self.country_code], _(' ('), self.country_code, _(')'))
 
 
 class AuthenticatedSegmentPluginModel(SegmentBasePluginModel):
