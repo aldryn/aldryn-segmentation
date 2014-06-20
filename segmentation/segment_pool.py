@@ -3,8 +3,7 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
-from django.utils.translation import get_language
-
+from django.utils.translation import get_language, ugettext
 from cms.exceptions import PluginAlreadyRegistered, PluginNotRegistered
 from cms.plugin_pool import plugin_pool
 
@@ -266,7 +265,7 @@ class SegmentPool(object):
             for _, segment_class in self._sorted_segments[lang]:
                 segment_class['CONFIGURATIONS'] = sorted(
                     segment_class['CONFIGURATIONS'].items(),
-                    key=lambda x: x[0].encode('utf-8')
+                    key=lambda x: ugettext(x[0]).encode('utf-8')
                 )
 
         return self._sorted_segments[lang]

@@ -1,0 +1,1185 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-20 03:30+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: cms_toolbar.py:45
+#, python-format
+msgid "Segments (%s)"
+msgstr "Segments (%s)"
+
+#: cms_toolbar.py:45
+msgid "Segments"
+msgstr "Segments"
+
+#: cms_toolbar.py:65
+msgid "Forced Active"
+msgstr "Forcée active"
+
+#: cms_toolbar.py:65
+msgid "Forced Inactive"
+msgstr "Forcé inactif"
+
+#: cms_toolbar.py:80
+msgid "Reset all segments"
+msgstr "Réinitialiser tous les segments"
+
+#: models.py:22 models.py:66
+msgid "label"
+msgstr "label"
+
+#: models.py:25
+msgid "Optionally set a label for this limit block."
+msgstr "Éventuellement définir une étiquette pour ce bloc de limite."
+
+#: models.py:29
+msgid "# of matches to display"
+msgstr "No. de matchs à afficher"
+
+#: models.py:32
+msgid "Display up to how many matching segments?"
+msgstr "Afficher jusqu'à combien de segments correspondant?"
+
+#: models.py:38
+msgid "Show All"
+msgstr "Afficher tous"
+
+#: models.py:40
+msgid "Show First"
+msgstr "Afficher la première"
+
+#: models.py:42
+#, python-format
+msgid "Show First %d"
+msgstr "Afficher les %d premiers"
+
+#: models.py:47 models.py:99
+#, python-format
+msgid "%(label)s [%(config)s]"
+msgstr "%(label)s [%(config)s]"
+
+#: models.py:111
+msgid "Always active"
+msgstr "Toujours activé"
+
+#: models.py:116
+msgid "Always on?"
+msgstr "Toujours activé?"
+
+#: models.py:118
+msgid "Uncheck to always hide child plugins."
+msgstr "Décochez de toujours cacher plugins enfants."
+
+#: models.py:124
+msgid "Always ON"
+msgstr "Toujours activé?"
+
+#: models.py:126
+msgid "Always OFF"
+msgstr "Toujours désactivé?"
+
+#: models.py:147
+msgid "name of cookie"
+msgstr "Nom du cookie"
+
+#: models.py:150
+msgid "Name of cookie to consider."
+msgstr "Nom du cookie à envisager"
+
+#: models.py:154
+msgid "value to compare"
+msgstr "valeur à comparer"
+
+#: models.py:157
+msgid "Value to consider."
+msgstr "Valeur à considérer"
+
+#: models.py:163
+#, python-format
+msgid "“%(key)s” equals “%(value)s”"
+msgstr "“%(key)s” est égal à “%(value)s”"
+
+#: models.py:187
+msgid "Anonymous Proxy"
+msgstr "Anonyme proxy"
+
+#: models.py:188
+msgid "Satellite Provider"
+msgstr "Fournisseur de satellite"
+
+#: models.py:189
+msgid "Other Country"
+msgstr "Autres Pays"
+
+#: models.py:190
+msgid "Andorra"
+msgstr ""
+
+#: models.py:191
+msgid "United Arab Emirates"
+msgstr ""
+
+#: models.py:192
+msgid "Afghanistan"
+msgstr ""
+
+#: models.py:193
+msgid "Antigua and Barbuda"
+msgstr ""
+
+#: models.py:194
+msgid "Anguilla"
+msgstr ""
+
+#: models.py:195
+msgid "Albania"
+msgstr ""
+
+#: models.py:196
+msgid "Armenia"
+msgstr ""
+
+#: models.py:197
+msgid "Angola"
+msgstr ""
+
+#: models.py:198
+msgid "Asia/Pacific Region"
+msgstr ""
+
+#: models.py:199
+msgid "Antarctica"
+msgstr ""
+
+#: models.py:200
+msgid "Argentina"
+msgstr ""
+
+#: models.py:201
+msgid "American Samoa"
+msgstr ""
+
+#: models.py:202
+msgid "Austria"
+msgstr ""
+
+#: models.py:203
+msgid "Australia"
+msgstr ""
+
+#: models.py:204
+msgid "Aruba"
+msgstr ""
+
+#: models.py:205
+msgid "Aland Islands"
+msgstr ""
+
+#: models.py:206
+msgid "Azerbaijan"
+msgstr ""
+
+#: models.py:207
+msgid "Bosnia and Herzegovina"
+msgstr ""
+
+#: models.py:208
+msgid "Barbados"
+msgstr ""
+
+#: models.py:209
+msgid "Bangladesh"
+msgstr ""
+
+#: models.py:210
+msgid "Belgium"
+msgstr ""
+
+#: models.py:211
+msgid "Burkina Faso"
+msgstr ""
+
+#: models.py:212
+msgid "Bulgaria"
+msgstr ""
+
+#: models.py:213
+msgid "Bahrain"
+msgstr ""
+
+#: models.py:214
+msgid "Burundi"
+msgstr ""
+
+#: models.py:215
+msgid "Benin"
+msgstr ""
+
+#: models.py:216
+msgid "Saint Bartelemey"
+msgstr ""
+
+#: models.py:217
+msgid "Bermuda"
+msgstr ""
+
+#: models.py:218
+msgid "Brunei Darussalam"
+msgstr ""
+
+#: models.py:219
+msgid "Bolivia"
+msgstr ""
+
+#: models.py:220
+msgid "Bonaire, Saint Eustatius and Saba"
+msgstr ""
+
+#: models.py:221
+msgid "Brazil"
+msgstr ""
+
+#: models.py:222
+msgid "Bahamas"
+msgstr ""
+
+#: models.py:223
+msgid "Bhutan"
+msgstr ""
+
+#: models.py:224
+msgid "Bouvet Island"
+msgstr ""
+
+#: models.py:225
+msgid "Botswana"
+msgstr ""
+
+#: models.py:226
+msgid "Belarus"
+msgstr ""
+
+#: models.py:227
+msgid "Belize"
+msgstr ""
+
+#: models.py:228
+msgid "Canada"
+msgstr ""
+
+#: models.py:229
+msgid "Cocos (Keeling) Islands"
+msgstr ""
+
+#: models.py:230
+msgid "Congo, The Democratic Republic of the"
+msgstr ""
+
+#: models.py:231
+msgid "Central African Republic"
+msgstr ""
+
+#: models.py:232
+msgid "Congo"
+msgstr ""
+
+#: models.py:233
+msgid "Switzerland"
+msgstr "Suisse"
+
+#: models.py:234
+msgid "Cote d’Ivoire"
+msgstr ""
+
+#: models.py:235
+msgid "Cook Islands"
+msgstr ""
+
+#: models.py:236
+msgid "Chile"
+msgstr ""
+
+#: models.py:237
+msgid "Cameroon"
+msgstr ""
+
+#: models.py:238
+msgid "China"
+msgstr "Chine"
+
+#: models.py:239
+msgid "Colombia"
+msgstr ""
+
+#: models.py:240
+msgid "Costa Rica"
+msgstr ""
+
+#: models.py:241
+msgid "Cuba"
+msgstr ""
+
+#: models.py:242
+msgid "Cape Verde"
+msgstr ""
+
+#: models.py:243
+msgid "Curacao"
+msgstr ""
+
+#: models.py:244
+msgid "Christmas Island"
+msgstr ""
+
+#: models.py:245
+msgid "Cyprus"
+msgstr ""
+
+#: models.py:246
+msgid "Czech Republic"
+msgstr ""
+
+#: models.py:247
+msgid "Germany"
+msgstr "Allemagne"
+
+#: models.py:248
+msgid "Djibouti"
+msgstr ""
+
+#: models.py:249
+msgid "Denmark"
+msgstr ""
+
+#: models.py:250
+msgid "Dominica"
+msgstr ""
+
+#: models.py:251
+msgid "Dominican Republic"
+msgstr ""
+
+#: models.py:252
+msgid "Algeria"
+msgstr ""
+
+#: models.py:253
+msgid "Ecuador"
+msgstr ""
+
+#: models.py:254
+msgid "Estonia"
+msgstr ""
+
+#: models.py:255
+msgid "Egypt"
+msgstr ""
+
+#: models.py:256
+msgid "Western Sahara"
+msgstr ""
+
+#: models.py:257
+msgid "Eritrea"
+msgstr ""
+
+#: models.py:258
+msgid "Spain"
+msgstr "Espagne"
+
+#: models.py:259
+msgid "Ethiopia"
+msgstr ""
+
+#: models.py:260
+msgid "Europe"
+msgstr ""
+
+#: models.py:261
+msgid "Finland"
+msgstr "Finlande"
+
+#: models.py:262
+msgid "Fiji"
+msgstr ""
+
+#: models.py:263
+msgid "Falkland Islands (Malvinas)"
+msgstr ""
+
+#: models.py:264
+msgid "Micronesia, Federated States of"
+msgstr ""
+
+#: models.py:265
+msgid "Faroe Islands"
+msgstr ""
+
+#: models.py:266
+msgid "France"
+msgstr ""
+
+#: models.py:267
+msgid "Gabon"
+msgstr ""
+
+#: models.py:268
+msgid "United Kingdom"
+msgstr "Royaume-Uni"
+
+#: models.py:269
+msgid "Grenada"
+msgstr ""
+
+#: models.py:270
+msgid "Georgia"
+msgstr ""
+
+#: models.py:271
+msgid "French Guiana"
+msgstr ""
+
+#: models.py:272
+msgid "Guernsey"
+msgstr ""
+
+#: models.py:273
+msgid "Ghana"
+msgstr ""
+
+#: models.py:274
+msgid "Gibraltar"
+msgstr ""
+
+#: models.py:275
+msgid "Greenland"
+msgstr ""
+
+#: models.py:276
+msgid "Gambia"
+msgstr ""
+
+#: models.py:277
+msgid "Guinea"
+msgstr ""
+
+#: models.py:278
+msgid "Guadeloupe"
+msgstr ""
+
+#: models.py:279
+msgid "Equatorial Guinea"
+msgstr ""
+
+#: models.py:280
+msgid "Greece"
+msgstr ""
+
+#: models.py:281
+msgid "South Georgia and the South Sandwich Islands"
+msgstr ""
+
+#: models.py:282
+msgid "Guatemala"
+msgstr ""
+
+#: models.py:283
+msgid "Guam"
+msgstr ""
+
+#: models.py:284
+msgid "Guinea-Bissau"
+msgstr ""
+
+#: models.py:285
+msgid "Guyana"
+msgstr ""
+
+#: models.py:286
+msgid "Hong Kong"
+msgstr ""
+
+#: models.py:287
+msgid "Heard Island and McDonald Islands"
+msgstr ""
+
+#: models.py:288
+msgid "Honduras"
+msgstr ""
+
+#: models.py:289
+msgid "Croatia"
+msgstr ""
+
+#: models.py:290
+msgid "Haiti"
+msgstr ""
+
+#: models.py:291
+msgid "Hungary"
+msgstr ""
+
+#: models.py:292
+msgid "Indonesia"
+msgstr ""
+
+#: models.py:293
+msgid "Ireland"
+msgstr ""
+
+#: models.py:294
+msgid "Israel"
+msgstr ""
+
+#: models.py:295
+msgid "Isle of Man"
+msgstr ""
+
+#: models.py:296
+msgid "India"
+msgstr ""
+
+#: models.py:297
+msgid "British Indian Ocean Territory"
+msgstr ""
+
+#: models.py:298
+msgid "Iraq"
+msgstr ""
+
+#: models.py:299
+msgid "Iran, Islamic Republic of"
+msgstr ""
+
+#: models.py:300
+msgid "Iceland"
+msgstr ""
+
+#: models.py:301
+msgid "Italy"
+msgstr "Italie"
+
+#: models.py:302
+msgid "Jersey"
+msgstr ""
+
+#: models.py:303
+msgid "Jamaica"
+msgstr ""
+
+#: models.py:304
+msgid "Jordan"
+msgstr ""
+
+#: models.py:305
+msgid "Japan"
+msgstr ""
+
+#: models.py:306
+msgid "Kenya"
+msgstr ""
+
+#: models.py:307
+msgid "Kyrgyzstan"
+msgstr ""
+
+#: models.py:308
+msgid "Cambodia"
+msgstr ""
+
+#: models.py:309
+msgid "Kiribati"
+msgstr ""
+
+#: models.py:310
+msgid "Comoros"
+msgstr ""
+
+#: models.py:311
+msgid "Saint Kitts and Nevis"
+msgstr ""
+
+#: models.py:312
+msgid "Korea, Democratic People’s Republic of"
+msgstr ""
+
+#: models.py:313
+msgid "Korea, Republic of"
+msgstr ""
+
+#: models.py:314
+msgid "Kuwait"
+msgstr ""
+
+#: models.py:315
+msgid "Cayman Islands"
+msgstr ""
+
+#: models.py:316
+msgid "Kazakhstan"
+msgstr ""
+
+#: models.py:317
+msgid "Lao, People’s Democratic Republic of"
+msgstr ""
+
+#: models.py:318
+msgid "Lebanon"
+msgstr ""
+
+#: models.py:319
+msgid "Saint Lucia"
+msgstr ""
+
+#: models.py:320
+msgid "Liechtenstein"
+msgstr ""
+
+#: models.py:321
+msgid "Sri Lanka"
+msgstr ""
+
+#: models.py:322
+msgid "Liberia"
+msgstr ""
+
+#: models.py:323
+msgid "Lesotho"
+msgstr ""
+
+#: models.py:324
+msgid "Lithuania"
+msgstr ""
+
+#: models.py:325
+msgid "Luxembourg"
+msgstr ""
+
+#: models.py:326
+msgid "Latvia"
+msgstr ""
+
+#: models.py:327
+msgid "Libyan Arab Jamahiriya"
+msgstr ""
+
+#: models.py:328
+msgid "Morocco"
+msgstr ""
+
+#: models.py:329
+msgid "Monaco"
+msgstr ""
+
+#: models.py:330
+msgid "Moldova, Republic of"
+msgstr ""
+
+#: models.py:331
+msgid "Montenegro"
+msgstr ""
+
+#: models.py:332
+msgid "Saint Martin"
+msgstr ""
+
+#: models.py:333
+msgid "Madagascar"
+msgstr ""
+
+#: models.py:334
+msgid "Marshall Islands"
+msgstr ""
+
+#: models.py:335
+msgid "Macedonia"
+msgstr ""
+
+#: models.py:336
+msgid "Mali"
+msgstr ""
+
+#: models.py:337
+msgid "Myanmar"
+msgstr ""
+
+#: models.py:338
+msgid "Mongolia"
+msgstr ""
+
+#: models.py:339
+msgid "Macao"
+msgstr ""
+
+#: models.py:340
+msgid "Northern Mariana Islands"
+msgstr ""
+
+#: models.py:341
+msgid "Martinique"
+msgstr ""
+
+#: models.py:342
+msgid "Mauritania"
+msgstr ""
+
+#: models.py:343
+msgid "Montserrat"
+msgstr ""
+
+#: models.py:344
+msgid "Malta"
+msgstr ""
+
+#: models.py:345
+msgid "Mauritius"
+msgstr ""
+
+#: models.py:346
+msgid "Maldives"
+msgstr ""
+
+#: models.py:347
+msgid "Malawi"
+msgstr ""
+
+#: models.py:348
+msgid "Mexico"
+msgstr ""
+
+#: models.py:349
+msgid "Malaysia"
+msgstr ""
+
+#: models.py:350
+msgid "Mozambique"
+msgstr ""
+
+#: models.py:351
+msgid "Namibia"
+msgstr ""
+
+#: models.py:352
+msgid "New Caledonia"
+msgstr ""
+
+#: models.py:353
+msgid "Niger"
+msgstr ""
+
+#: models.py:354
+msgid "Norfolk Island"
+msgstr ""
+
+#: models.py:355
+msgid "Nigeria"
+msgstr ""
+
+#: models.py:356
+msgid "Nicaragua"
+msgstr ""
+
+#: models.py:357
+msgid "Netherlands"
+msgstr "Pays-Bas"
+
+#: models.py:358
+msgid "Norway"
+msgstr ""
+
+#: models.py:359
+msgid "Nepal"
+msgstr ""
+
+#: models.py:360
+msgid "Nauru"
+msgstr ""
+
+#: models.py:361
+msgid "Niue"
+msgstr ""
+
+#: models.py:362
+msgid "New Zealand"
+msgstr ""
+
+#: models.py:363
+msgid "Oman"
+msgstr ""
+
+#: models.py:364
+msgid "Panama"
+msgstr ""
+
+#: models.py:365
+msgid "Peru"
+msgstr ""
+
+#: models.py:366
+msgid "French Polynesia"
+msgstr ""
+
+#: models.py:367
+msgid "Papua New Guinea"
+msgstr ""
+
+#: models.py:368
+msgid "Philippines"
+msgstr ""
+
+#: models.py:369
+msgid "Pakistan"
+msgstr ""
+
+#: models.py:370
+msgid "Poland"
+msgstr ""
+
+#: models.py:371
+msgid "Saint Pierre and Miquelon"
+msgstr ""
+
+#: models.py:372
+msgid "Pitcairn"
+msgstr ""
+
+#: models.py:373
+msgid "Puerto Rico"
+msgstr ""
+
+#: models.py:374
+msgid "Palestinian Territory"
+msgstr ""
+
+#: models.py:375
+msgid "Portugal"
+msgstr ""
+
+#: models.py:376
+msgid "Palau"
+msgstr ""
+
+#: models.py:377
+msgid "Paraguay"
+msgstr ""
+
+#: models.py:378
+msgid "Qatar"
+msgstr ""
+
+#: models.py:379
+msgid "Reunion"
+msgstr ""
+
+#: models.py:380
+msgid "Romania"
+msgstr ""
+
+#: models.py:381
+msgid "Serbia"
+msgstr ""
+
+#: models.py:382
+msgid "Russian Federation"
+msgstr ""
+
+#: models.py:383
+msgid "Rwanda"
+msgstr ""
+
+#: models.py:384
+msgid "Saudi Arabia"
+msgstr ""
+
+#: models.py:385
+msgid "Solomon Islands"
+msgstr ""
+
+#: models.py:386
+msgid "Seychelles"
+msgstr ""
+
+#: models.py:387
+msgid "Sudan"
+msgstr ""
+
+#: models.py:388
+msgid "Sweden"
+msgstr ""
+
+#: models.py:389
+msgid "Singapore"
+msgstr ""
+
+#: models.py:390
+msgid "Saint Helena"
+msgstr ""
+
+#: models.py:391
+msgid "Slovenia"
+msgstr ""
+
+#: models.py:392
+msgid "Svalbard and Jan Mayen"
+msgstr ""
+
+#: models.py:393
+msgid "Slovakia"
+msgstr ""
+
+#: models.py:394
+msgid "Sierra Leone"
+msgstr ""
+
+#: models.py:395
+msgid "San Marino"
+msgstr ""
+
+#: models.py:396
+msgid "Senegal"
+msgstr ""
+
+#: models.py:397
+msgid "Somalia"
+msgstr ""
+
+#: models.py:398
+msgid "Suriname"
+msgstr ""
+
+#: models.py:399
+msgid "South Sudan"
+msgstr ""
+
+#: models.py:400
+msgid "Sao Tome and Principe"
+msgstr ""
+
+#: models.py:401
+msgid "El Salvador"
+msgstr ""
+
+#: models.py:402
+msgid "Sint Maarten"
+msgstr ""
+
+#: models.py:403
+msgid "Syrian Arab Republic"
+msgstr ""
+
+#: models.py:404
+msgid "Swaziland"
+msgstr ""
+
+#: models.py:405
+msgid "Turks and Caicos Islands"
+msgstr ""
+
+#: models.py:406
+msgid "Chad"
+msgstr ""
+
+#: models.py:407
+msgid "French Southern Territories"
+msgstr ""
+
+#: models.py:408
+msgid "Togo"
+msgstr ""
+
+#: models.py:409
+msgid "Thailand"
+msgstr ""
+
+#: models.py:410
+msgid "Tajikistan"
+msgstr ""
+
+#: models.py:411
+msgid "Tokelau"
+msgstr ""
+
+#: models.py:412
+msgid "Timor-Leste"
+msgstr ""
+
+#: models.py:413
+msgid "Turkmenistan"
+msgstr ""
+
+#: models.py:414
+msgid "Tunisia"
+msgstr ""
+
+#: models.py:415
+msgid "Tonga"
+msgstr ""
+
+#: models.py:416
+msgid "Turkey"
+msgstr ""
+
+#: models.py:417
+msgid "Trinidad and Tobago"
+msgstr ""
+
+#: models.py:418
+msgid "Tuvalu"
+msgstr ""
+
+#: models.py:419
+msgid "Taiwan"
+msgstr ""
+
+#: models.py:420
+msgid "Tanzania, United Republic of"
+msgstr ""
+
+#: models.py:421
+msgid "Ukraine"
+msgstr ""
+
+#: models.py:422
+msgid "Uganda"
+msgstr ""
+
+#: models.py:423
+msgid "United States Minor Outlying Islands"
+msgstr ""
+
+#: models.py:424
+msgid "United States"
+msgstr "États-Unis"
+
+#: models.py:425
+msgid "Uruguay"
+msgstr ""
+
+#: models.py:426
+msgid "Uzbekistan"
+msgstr ""
+
+#: models.py:427
+msgid "Holy See (Vatican City State)"
+msgstr ""
+
+#: models.py:428
+msgid "Saint Vincent and the Grenadines"
+msgstr ""
+
+#: models.py:429
+msgid "Venezuela"
+msgstr ""
+
+#: models.py:430
+msgid "Virgin Islands, British"
+msgstr ""
+
+#: models.py:431
+msgid "Virgin Islands, U.S."
+msgstr ""
+
+#: models.py:432
+msgid "Vietnam"
+msgstr ""
+
+#: models.py:433
+msgid "Vanuatu"
+msgstr ""
+
+#: models.py:434
+msgid "Wallis and Futuna"
+msgstr ""
+
+#: models.py:435
+msgid "Samoa"
+msgstr ""
+
+#: models.py:436
+msgid "Yemen"
+msgstr ""
+
+#: models.py:437
+msgid "Mayotte"
+msgstr ""
+
+#: models.py:438
+msgid "South Africa"
+msgstr ""
+
+#: models.py:439
+msgid "Zambia"
+msgstr ""
+
+#: models.py:440
+msgid "Zimbabwe"
+msgstr ""
+
+#: models.py:447
+#, python-format
+msgid "%(code)s: %(name)s"
+msgstr "%(code)s: %(name)s"
+
+#: models.py:454
+msgid "country"
+msgstr "pays"
+
+#: models.py:463
+#, python-format
+msgid "%(name)s (%(code)s)"
+msgstr "%(name)s (%(code)s)"
+
+#: models.py:475
+msgid "is Authenticated"
+msgstr "Est authentifiée"
+
+#: views.py:22
+msgid "The segment override was successfully changed."
+msgstr "La correction de segment a été modifié avec succès."
+
+#: views.py:31
+msgid "The all segment override were successfully reset."
+msgstr "La correction tout segment ont été correctement remis à zéro."
+
+#: cms_plugins/segment_limiter.py:19 cms_plugins/segment_plugin_base.py:25
+msgid "Segmentation"
+msgstr "Segmentation"
+
+#: cms_plugins/segment_limiter.py:20
+msgid "Limit Block"
+msgstr "Bloc de limite"
+
+#: cms_plugins/segment_plugins.py:25
+msgid "Fallback"
+msgstr "Repli"
+
+#: cms_plugins/segment_plugins.py:44
+msgid "Segment by Switch"
+msgstr "Secteur par switch"
+
+#: cms_plugins/segment_plugins.py:62
+msgid "Segment by Cookie"
+msgstr "Secteur par cookie"
+
+#: cms_plugins/segment_plugins.py:86
+msgid "Segment by Country"
+msgstr "Secteur par pays"
+
+#: cms_plugins/segment_plugins.py:106
+msgid "Segment by Auth"
+msgstr "Secteur par auth"

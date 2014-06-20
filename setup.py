@@ -27,6 +27,11 @@ setup(
     author_email='info@divio.ch',
     url='https://github.com/aldryn/aldryn-segmentation',
     packages=find_packages(),
+    package_data={
+        "segmentation": [
+            "locale/*/LC_MESSAGES/*",
+        ],
+    },
     license='LICENSE.txt',
     platforms=['OS Independent'],
     install_requires=REQUIREMENTS,
