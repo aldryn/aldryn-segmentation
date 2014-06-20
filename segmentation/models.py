@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from cms.models import CMSPlugin
@@ -8,6 +10,7 @@ from cms.models import CMSPlugin
 #
 # NOTE: The SegmentLimitPluginModel does NOT subclass SegmentBasePluginModel
 #
+@python_2_unicode_compatible
 class SegmentLimitPluginModel(CMSPlugin):
 
     #
@@ -35,16 +38,16 @@ class SegmentLimitPluginModel(CMSPlugin):
     @property
     def configuration_string(self):
         if self.max_children == 0:
-            return _(u'Show All')
+            return _('Show All')
         elif self.max_children == 1:
-            return _(u'Show First')
+            return _('Show First')
         else:
-            return _(u'Show First %d' % self.max_children)
+            return _('Show First %d' % self.max_children)
 
 
-    def __unicode__(self):
+    def __str__(self):
         if self.label:
-            return _(u'%(label)s [%(config)s]') % {
+            return _('%(label)s [%(config)s]') % {
                 'label': self.label,
                 'config': self.configuration_string,
             }
@@ -52,13 +55,15 @@ class SegmentLimitPluginModel(CMSPlugin):
             return self.configuration_string
 
 
+@python_2_unicode_compatible
 class SegmentBasePluginModel(CMSPlugin):
-    '''
-    Defines a common interface for segment plugins. Also note that plugin
-    model's subclassing this class will automatically be (un-)registered
-    (from)to the segment_pool via 'pre_delete' and 'post_save' signals. This
-    is implemented in segmentation.segment_pool.
-    '''
+    
+    #
+    # Defines a common interface for segment plugins. Also note that plugin
+    # model's subclassing this class will automatically be (un-)registered
+    # (from)to the segment_pool via 'pre_delete' and 'post_save' signals. This
+    # is implemented in segmentation.segment_pool.
+    #
 
     class Meta:
         abstract = True
@@ -94,9 +99,9 @@ class SegmentBasePluginModel(CMSPlugin):
         raise NotImplementedError("Please Implement this method")
 
 
-    def __unicode__(self):
+    def __str__(self):
         if self.label:
-            return _(u'%(label)s [%(config)s]') % {
+            return _('%(label)s [%(config)s]') % {
                 'label': self.label,
                 'config': self.configuration_string,
             }
@@ -108,7 +113,7 @@ class FallbackSegmentPluginModel(SegmentBasePluginModel):
 
     @property
     def configuration_string(self):
-        return _(u'Always active')
+        return _('Always active')
 
 
 class SwitchSegmentPluginModel(SegmentBasePluginModel):
@@ -121,9 +126,9 @@ class SwitchSegmentPluginModel(SegmentBasePluginModel):
     @property
     def configuration_string(self):
         if self.on_off:
-            return _(u'Always ON')
+            return _('Always ON')
         else:
-            return _(u'Always OFF')
+            return _('Always OFF')
 
 
 class CookieSegmentPluginModel(SegmentBasePluginModel):
@@ -160,7 +165,7 @@ class CookieSegmentPluginModel(SegmentBasePluginModel):
 
     @property
     def configuration_string(self):
-        return _(u'“%(key)s” equals “%(value)s”' % {
+        return _('“%(key)s” equals “%(value)s”' % {
             'key': self.cookie_key,
             'value': self.cookie_value,
         })
@@ -183,267 +188,267 @@ class CountrySegmentPluginModel(SegmentBasePluginModel):
     # TODO: Move this and related bits to a new repo.
     #
     COUNTRY_CODES = [
-        (u'A1', _(u'Anonymous Proxy')),
-        (u'A2', _(u'Satellite Provider')),
-        (u'O1', _(u'Other Country')),
-        (u'AD', _(u'Andorra')),
-        (u'AE', _(u'United Arab Emirates')),
-        (u'AF', _(u'Afghanistan')),
-        (u'AG', _(u'Antigua and Barbuda')),
-        (u'AI', _(u'Anguilla')),
-        (u'AL', _(u'Albania')),
-        (u'AM', _(u'Armenia')),
-        (u'AO', _(u'Angola')),
-        (u'AP', _(u'Asia/Pacific Region')),
-        (u'AQ', _(u'Antarctica')),
-        (u'AR', _(u'Argentina')),
-        (u'AS', _(u'American Samoa')),
-        (u'AT', _(u'Austria')),
-        (u'AU', _(u'Australia')),
-        (u'AW', _(u'Aruba')),
-        (u'AX', _(u'Aland Islands')),
-        (u'AZ', _(u'Azerbaijan')),
-        (u'BA', _(u'Bosnia and Herzegovina')),
-        (u'BB', _(u'Barbados')),
-        (u'BD', _(u'Bangladesh')),
-        (u'BE', _(u'Belgium')),
-        (u'BF', _(u'Burkina Faso')),
-        (u'BG', _(u'Bulgaria')),
-        (u'BH', _(u'Bahrain')),
-        (u'BI', _(u'Burundi')),
-        (u'BJ', _(u'Benin')),
-        (u'BL', _(u'Saint Bartelemey')),
-        (u'BM', _(u'Bermuda')),
-        (u'BN', _(u'Brunei Darussalam')),
-        (u'BO', _(u'Bolivia')),
-        (u'BQ', _(u'Bonaire, Saint Eustatius and Saba')),
-        (u'BR', _(u'Brazil')),
-        (u'BS', _(u'Bahamas')),
-        (u'BT', _(u'Bhutan')),
-        (u'BV', _(u'Bouvet Island')),
-        (u'BW', _(u'Botswana')),
-        (u'BY', _(u'Belarus')),
-        (u'BZ', _(u'Belize')),
-        (u'CA', _(u'Canada')),
-        (u'CC', _(u'Cocos (Keeling) Islands')),
-        (u'CD', _(u'Congo, The Democratic Republic of the')),
-        (u'CF', _(u'Central African Republic')),
-        (u'CG', _(u'Congo')),
-        (u'CH', _(u'Switzerland')),
-        (u'CI', _(u'Cote d’Ivoire')),
-        (u'CK', _(u'Cook Islands')),
-        (u'CL', _(u'Chile')),
-        (u'CM', _(u'Cameroon')),
-        (u'CN', _(u'China')),
-        (u'CO', _(u'Colombia')),
-        (u'CR', _(u'Costa Rica')),
-        (u'CU', _(u'Cuba')),
-        (u'CV', _(u'Cape Verde')),
-        (u'CW', _(u'Curacao')),
-        (u'CX', _(u'Christmas Island')),
-        (u'CY', _(u'Cyprus')),
-        (u'CZ', _(u'Czech Republic')),
-        (u'DE', _(u'Germany')),
-        (u'DJ', _(u'Djibouti')),
-        (u'DK', _(u'Denmark')),
-        (u'DM', _(u'Dominica')),
-        (u'DO', _(u'Dominican Republic')),
-        (u'DZ', _(u'Algeria')),
-        (u'EC', _(u'Ecuador')),
-        (u'EE', _(u'Estonia')),
-        (u'EG', _(u'Egypt')),
-        (u'EH', _(u'Western Sahara')),
-        (u'ER', _(u'Eritrea')),
-        (u'ES', _(u'Spain')),
-        (u'ET', _(u'Ethiopia')),
-        (u'EU', _(u'Europe')),
-        (u'FI', _(u'Finland')),
-        (u'FJ', _(u'Fiji')),
-        (u'FK', _(u'Falkland Islands (Malvinas)')),
-        (u'FM', _(u'Micronesia, Federated States of')),
-        (u'FO', _(u'Faroe Islands')),
-        (u'FR', _(u'France')),
-        (u'GA', _(u'Gabon')),
-        (u'GB', _(u'United Kingdom')),
-        (u'GD', _(u'Grenada')),
-        (u'GE', _(u'Georgia')),
-        (u'GF', _(u'French Guiana')),
-        (u'GG', _(u'Guernsey')),
-        (u'GH', _(u'Ghana')),
-        (u'GI', _(u'Gibraltar')),
-        (u'GL', _(u'Greenland')),
-        (u'GM', _(u'Gambia')),
-        (u'GN', _(u'Guinea')),
-        (u'GP', _(u'Guadeloupe')),
-        (u'GQ', _(u'Equatorial Guinea')),
-        (u'GR', _(u'Greece')),
-        (u'GS', _(u'South Georgia and the South Sandwich Islands')),
-        (u'GT', _(u'Guatemala')),
-        (u'GU', _(u'Guam')),
-        (u'GW', _(u'Guinea-Bissau')),
-        (u'GY', _(u'Guyana')),
-        (u'HK', _(u'Hong Kong')),
-        (u'HM', _(u'Heard Island and McDonald Islands')),
-        (u'HN', _(u'Honduras')),
-        (u'HR', _(u'Croatia')),
-        (u'HT', _(u'Haiti')),
-        (u'HU', _(u'Hungary')),
-        (u'ID', _(u'Indonesia')),
-        (u'IE', _(u'Ireland')),
-        (u'IL', _(u'Israel')),
-        (u'IM', _(u'Isle of Man')),
-        (u'IN', _(u'India')),
-        (u'IO', _(u'British Indian Ocean Territory')),
-        (u'IQ', _(u'Iraq')),
-        (u'IR', _(u'Iran, Islamic Republic of')),
-        (u'IS', _(u'Iceland')),
-        (u'IT', _(u'Italy')),
-        (u'JE', _(u'Jersey')),
-        (u'JM', _(u'Jamaica')),
-        (u'JO', _(u'Jordan')),
-        (u'JP', _(u'Japan')),
-        (u'KE', _(u'Kenya')),
-        (u'KG', _(u'Kyrgyzstan')),
-        (u'KH', _(u'Cambodia')),
-        (u'KI', _(u'Kiribati')),
-        (u'KM', _(u'Comoros')),
-        (u'KN', _(u'Saint Kitts and Nevis')),
-        (u'KP', _(u'Korea, Democratic People’s Republic of')),
-        (u'KR', _(u'Korea, Republic of')),
-        (u'KW', _(u'Kuwait')),
-        (u'KY', _(u'Cayman Islands')),
-        (u'KZ', _(u'Kazakhstan')),
-        (u'LA', _(u'Lao, People’s Democratic Republic of')),
-        (u'LB', _(u'Lebanon')),
-        (u'LC', _(u'Saint Lucia')),
-        (u'LI', _(u'Liechtenstein')),
-        (u'LK', _(u'Sri Lanka')),
-        (u'LR', _(u'Liberia')),
-        (u'LS', _(u'Lesotho')),
-        (u'LT', _(u'Lithuania')),
-        (u'LU', _(u'Luxembourg')),
-        (u'LV', _(u'Latvia')),
-        (u'LY', _(u'Libyan Arab Jamahiriya')),
-        (u'MA', _(u'Morocco')),
-        (u'MC', _(u'Monaco')),
-        (u'MD', _(u'Moldova, Republic of')),
-        (u'ME', _(u'Montenegro')),
-        (u'MF', _(u'Saint Martin')),
-        (u'MG', _(u'Madagascar')),
-        (u'MH', _(u'Marshall Islands')),
-        (u'MK', _(u'Macedonia')),
-        (u'ML', _(u'Mali')),
-        (u'MM', _(u'Myanmar')),
-        (u'MN', _(u'Mongolia')),
-        (u'MO', _(u'Macao')),
-        (u'MP', _(u'Northern Mariana Islands')),
-        (u'MQ', _(u'Martinique')),
-        (u'MR', _(u'Mauritania')),
-        (u'MS', _(u'Montserrat')),
-        (u'MT', _(u'Malta')),
-        (u'MU', _(u'Mauritius')),
-        (u'MV', _(u'Maldives')),
-        (u'MW', _(u'Malawi')),
-        (u'MX', _(u'Mexico')),
-        (u'MY', _(u'Malaysia')),
-        (u'MZ', _(u'Mozambique')),
-        (u'NA', _(u'Namibia')),
-        (u'NC', _(u'New Caledonia')),
-        (u'NE', _(u'Niger')),
-        (u'NF', _(u'Norfolk Island')),
-        (u'NG', _(u'Nigeria')),
-        (u'NI', _(u'Nicaragua')),
-        (u'NL', _(u'Netherlands')),
-        (u'NO', _(u'Norway')),
-        (u'NP', _(u'Nepal')),
-        (u'NR', _(u'Nauru')),
-        (u'NU', _(u'Niue')),
-        (u'NZ', _(u'New Zealand')),
-        (u'OM', _(u'Oman')),
-        (u'PA', _(u'Panama')),
-        (u'PE', _(u'Peru')),
-        (u'PF', _(u'French Polynesia')),
-        (u'PG', _(u'Papua New Guinea')),
-        (u'PH', _(u'Philippines')),
-        (u'PK', _(u'Pakistan')),
-        (u'PL', _(u'Poland')),
-        (u'PM', _(u'Saint Pierre and Miquelon')),
-        (u'PN', _(u'Pitcairn')),
-        (u'PR', _(u'Puerto Rico')),
-        (u'PS', _(u'Palestinian Territory')),
-        (u'PT', _(u'Portugal')),
-        (u'PW', _(u'Palau')),
-        (u'PY', _(u'Paraguay')),
-        (u'QA', _(u'Qatar')),
-        (u'RE', _(u'Reunion')),
-        (u'RO', _(u'Romania')),
-        (u'RS', _(u'Serbia')),
-        (u'RU', _(u'Russian Federation')),
-        (u'RW', _(u'Rwanda')),
-        (u'SA', _(u'Saudi Arabia')),
-        (u'SB', _(u'Solomon Islands')),
-        (u'SC', _(u'Seychelles')),
-        (u'SD', _(u'Sudan')),
-        (u'SE', _(u'Sweden')),
-        (u'SG', _(u'Singapore')),
-        (u'SH', _(u'Saint Helena')),
-        (u'SI', _(u'Slovenia')),
-        (u'SJ', _(u'Svalbard and Jan Mayen')),
-        (u'SK', _(u'Slovakia')),
-        (u'SL', _(u'Sierra Leone')),
-        (u'SM', _(u'San Marino')),
-        (u'SN', _(u'Senegal')),
-        (u'SO', _(u'Somalia')),
-        (u'SR', _(u'Suriname')),
-        (u'SS', _(u'South Sudan')),
-        (u'ST', _(u'Sao Tome and Principe')),
-        (u'SV', _(u'El Salvador')),
-        (u'SX', _(u'Sint Maarten')),
-        (u'SY', _(u'Syrian Arab Republic')),
-        (u'SZ', _(u'Swaziland')),
-        (u'TC', _(u'Turks and Caicos Islands')),
-        (u'TD', _(u'Chad')),
-        (u'TF', _(u'French Southern Territories')),
-        (u'TG', _(u'Togo')),
-        (u'TH', _(u'Thailand')),
-        (u'TJ', _(u'Tajikistan')),
-        (u'TK', _(u'Tokelau')),
-        (u'TL', _(u'Timor-Leste')),
-        (u'TM', _(u'Turkmenistan')),
-        (u'TN', _(u'Tunisia')),
-        (u'TO', _(u'Tonga')),
-        (u'TR', _(u'Turkey')),
-        (u'TT', _(u'Trinidad and Tobago')),
-        (u'TV', _(u'Tuvalu')),
-        (u'TW', _(u'Taiwan')),
-        (u'TZ', _(u'Tanzania, United Republic of')),
-        (u'UA', _(u'Ukraine')),
-        (u'UG', _(u'Uganda')),
-        (u'UM', _(u'United States Minor Outlying Islands')),
-        (u'US', _(u'United States')),
-        (u'UY', _(u'Uruguay')),
-        (u'UZ', _(u'Uzbekistan')),
-        (u'VA', _(u'Holy See (Vatican City State)')),
-        (u'VC', _(u'Saint Vincent and the Grenadines')),
-        (u'VE', _(u'Venezuela')),
-        (u'VG', _(u'Virgin Islands, British')),
-        (u'VI', _(u'Virgin Islands, U.S.')),
-        (u'VN', _(u'Vietnam')),
-        (u'VU', _(u'Vanuatu')),
-        (u'WF', _(u'Wallis and Futuna')),
-        (u'WS', _(u'Samoa')),
-        (u'YE', _(u'Yemen')),
-        (u'YT', _(u'Mayotte')),
-        (u'ZA', _(u'South Africa')),
-        (u'ZM', _(u'Zambia')),
-        (u'ZW', _(u'Zimbabwe')),
+        ('A1', _('Anonymous Proxy')),
+        ('A2', _('Satellite Provider')),
+        ('O1', _('Other Country')),
+        ('AD', _('Andorra')),
+        ('AE', _('United Arab Emirates')),
+        ('AF', _('Afghanistan')),
+        ('AG', _('Antigua and Barbuda')),
+        ('AI', _('Anguilla')),
+        ('AL', _('Albania')),
+        ('AM', _('Armenia')),
+        ('AO', _('Angola')),
+        ('AP', _('Asia/Pacific Region')),
+        ('AQ', _('Antarctica')),
+        ('AR', _('Argentina')),
+        ('AS', _('American Samoa')),
+        ('AT', _('Austria')),
+        ('AU', _('Australia')),
+        ('AW', _('Aruba')),
+        ('AX', _('Aland Islands')),
+        ('AZ', _('Azerbaijan')),
+        ('BA', _('Bosnia and Herzegovina')),
+        ('BB', _('Barbados')),
+        ('BD', _('Bangladesh')),
+        ('BE', _('Belgium')),
+        ('BF', _('Burkina Faso')),
+        ('BG', _('Bulgaria')),
+        ('BH', _('Bahrain')),
+        ('BI', _('Burundi')),
+        ('BJ', _('Benin')),
+        ('BL', _('Saint Bartelemey')),
+        ('BM', _('Bermuda')),
+        ('BN', _('Brunei Darussalam')),
+        ('BO', _('Bolivia')),
+        ('BQ', _('Bonaire, Saint Eustatius and Saba')),
+        ('BR', _('Brazil')),
+        ('BS', _('Bahamas')),
+        ('BT', _('Bhutan')),
+        ('BV', _('Bouvet Island')),
+        ('BW', _('Botswana')),
+        ('BY', _('Belarus')),
+        ('BZ', _('Belize')),
+        ('CA', _('Canada')),
+        ('CC', _('Cocos (Keeling) Islands')),
+        ('CD', _('Congo, The Democratic Republic of the')),
+        ('CF', _('Central African Republic')),
+        ('CG', _('Congo')),
+        ('CH', _('Switzerland')),
+        ('CI', _('Cote d’Ivoire')),
+        ('CK', _('Cook Islands')),
+        ('CL', _('Chile')),
+        ('CM', _('Cameroon')),
+        ('CN', _('China')),
+        ('CO', _('Colombia')),
+        ('CR', _('Costa Rica')),
+        ('CU', _('Cuba')),
+        ('CV', _('Cape Verde')),
+        ('CW', _('Curacao')),
+        ('CX', _('Christmas Island')),
+        ('CY', _('Cyprus')),
+        ('CZ', _('Czech Republic')),
+        ('DE', _('Germany')),
+        ('DJ', _('Djibouti')),
+        ('DK', _('Denmark')),
+        ('DM', _('Dominica')),
+        ('DO', _('Dominican Republic')),
+        ('DZ', _('Algeria')),
+        ('EC', _('Ecuador')),
+        ('EE', _('Estonia')),
+        ('EG', _('Egypt')),
+        ('EH', _('Western Sahara')),
+        ('ER', _('Eritrea')),
+        ('ES', _('Spain')),
+        ('ET', _('Ethiopia')),
+        ('EU', _('Europe')),
+        ('FI', _('Finland')),
+        ('FJ', _('Fiji')),
+        ('FK', _('Falkland Islands (Malvinas)')),
+        ('FM', _('Micronesia, Federated States of')),
+        ('FO', _('Faroe Islands')),
+        ('FR', _('France')),
+        ('GA', _('Gabon')),
+        ('GB', _('United Kingdom')),
+        ('GD', _('Grenada')),
+        ('GE', _('Georgia')),
+        ('GF', _('French Guiana')),
+        ('GG', _('Guernsey')),
+        ('GH', _('Ghana')),
+        ('GI', _('Gibraltar')),
+        ('GL', _('Greenland')),
+        ('GM', _('Gambia')),
+        ('GN', _('Guinea')),
+        ('GP', _('Guadeloupe')),
+        ('GQ', _('Equatorial Guinea')),
+        ('GR', _('Greece')),
+        ('GS', _('South Georgia and the South Sandwich Islands')),
+        ('GT', _('Guatemala')),
+        ('GU', _('Guam')),
+        ('GW', _('Guinea-Bissau')),
+        ('GY', _('Guyana')),
+        ('HK', _('Hong Kong')),
+        ('HM', _('Heard Island and McDonald Islands')),
+        ('HN', _('Honduras')),
+        ('HR', _('Croatia')),
+        ('HT', _('Haiti')),
+        ('HU', _('Hungary')),
+        ('ID', _('Indonesia')),
+        ('IE', _('Ireland')),
+        ('IL', _('Israel')),
+        ('IM', _('Isle of Man')),
+        ('IN', _('India')),
+        ('IO', _('British Indian Ocean Territory')),
+        ('IQ', _('Iraq')),
+        ('IR', _('Iran, Islamic Republic of')),
+        ('IS', _('Iceland')),
+        ('IT', _('Italy')),
+        ('JE', _('Jersey')),
+        ('JM', _('Jamaica')),
+        ('JO', _('Jordan')),
+        ('JP', _('Japan')),
+        ('KE', _('Kenya')),
+        ('KG', _('Kyrgyzstan')),
+        ('KH', _('Cambodia')),
+        ('KI', _('Kiribati')),
+        ('KM', _('Comoros')),
+        ('KN', _('Saint Kitts and Nevis')),
+        ('KP', _('Korea, Democratic People’s Republic of')),
+        ('KR', _('Korea, Republic of')),
+        ('KW', _('Kuwait')),
+        ('KY', _('Cayman Islands')),
+        ('KZ', _('Kazakhstan')),
+        ('LA', _('Lao, People’s Democratic Republic of')),
+        ('LB', _('Lebanon')),
+        ('LC', _('Saint Lucia')),
+        ('LI', _('Liechtenstein')),
+        ('LK', _('Sri Lanka')),
+        ('LR', _('Liberia')),
+        ('LS', _('Lesotho')),
+        ('LT', _('Lithuania')),
+        ('LU', _('Luxembourg')),
+        ('LV', _('Latvia')),
+        ('LY', _('Libyan Arab Jamahiriya')),
+        ('MA', _('Morocco')),
+        ('MC', _('Monaco')),
+        ('MD', _('Moldova, Republic of')),
+        ('ME', _('Montenegro')),
+        ('MF', _('Saint Martin')),
+        ('MG', _('Madagascar')),
+        ('MH', _('Marshall Islands')),
+        ('MK', _('Macedonia')),
+        ('ML', _('Mali')),
+        ('MM', _('Myanmar')),
+        ('MN', _('Mongolia')),
+        ('MO', _('Macao')),
+        ('MP', _('Northern Mariana Islands')),
+        ('MQ', _('Martinique')),
+        ('MR', _('Mauritania')),
+        ('MS', _('Montserrat')),
+        ('MT', _('Malta')),
+        ('MU', _('Mauritius')),
+        ('MV', _('Maldives')),
+        ('MW', _('Malawi')),
+        ('MX', _('Mexico')),
+        ('MY', _('Malaysia')),
+        ('MZ', _('Mozambique')),
+        ('NA', _('Namibia')),
+        ('NC', _('New Caledonia')),
+        ('NE', _('Niger')),
+        ('NF', _('Norfolk Island')),
+        ('NG', _('Nigeria')),
+        ('NI', _('Nicaragua')),
+        ('NL', _('Netherlands')),
+        ('NO', _('Norway')),
+        ('NP', _('Nepal')),
+        ('NR', _('Nauru')),
+        ('NU', _('Niue')),
+        ('NZ', _('New Zealand')),
+        ('OM', _('Oman')),
+        ('PA', _('Panama')),
+        ('PE', _('Peru')),
+        ('PF', _('French Polynesia')),
+        ('PG', _('Papua New Guinea')),
+        ('PH', _('Philippines')),
+        ('PK', _('Pakistan')),
+        ('PL', _('Poland')),
+        ('PM', _('Saint Pierre and Miquelon')),
+        ('PN', _('Pitcairn')),
+        ('PR', _('Puerto Rico')),
+        ('PS', _('Palestinian Territory')),
+        ('PT', _('Portugal')),
+        ('PW', _('Palau')),
+        ('PY', _('Paraguay')),
+        ('QA', _('Qatar')),
+        ('RE', _('Reunion')),
+        ('RO', _('Romania')),
+        ('RS', _('Serbia')),
+        ('RU', _('Russian Federation')),
+        ('RW', _('Rwanda')),
+        ('SA', _('Saudi Arabia')),
+        ('SB', _('Solomon Islands')),
+        ('SC', _('Seychelles')),
+        ('SD', _('Sudan')),
+        ('SE', _('Sweden')),
+        ('SG', _('Singapore')),
+        ('SH', _('Saint Helena')),
+        ('SI', _('Slovenia')),
+        ('SJ', _('Svalbard and Jan Mayen')),
+        ('SK', _('Slovakia')),
+        ('SL', _('Sierra Leone')),
+        ('SM', _('San Marino')),
+        ('SN', _('Senegal')),
+        ('SO', _('Somalia')),
+        ('SR', _('Suriname')),
+        ('SS', _('South Sudan')),
+        ('ST', _('Sao Tome and Principe')),
+        ('SV', _('El Salvador')),
+        ('SX', _('Sint Maarten')),
+        ('SY', _('Syrian Arab Republic')),
+        ('SZ', _('Swaziland')),
+        ('TC', _('Turks and Caicos Islands')),
+        ('TD', _('Chad')),
+        ('TF', _('French Southern Territories')),
+        ('TG', _('Togo')),
+        ('TH', _('Thailand')),
+        ('TJ', _('Tajikistan')),
+        ('TK', _('Tokelau')),
+        ('TL', _('Timor-Leste')),
+        ('TM', _('Turkmenistan')),
+        ('TN', _('Tunisia')),
+        ('TO', _('Tonga')),
+        ('TR', _('Turkey')),
+        ('TT', _('Trinidad and Tobago')),
+        ('TV', _('Tuvalu')),
+        ('TW', _('Taiwan')),
+        ('TZ', _('Tanzania, United Republic of')),
+        ('UA', _('Ukraine')),
+        ('UG', _('Uganda')),
+        ('UM', _('United States Minor Outlying Islands')),
+        ('US', _('United States')),
+        ('UY', _('Uruguay')),
+        ('UZ', _('Uzbekistan')),
+        ('VA', _('Holy See (Vatican City State)')),
+        ('VC', _('Saint Vincent and the Grenadines')),
+        ('VE', _('Venezuela')),
+        ('VG', _('Virgin Islands, British')),
+        ('VI', _('Virgin Islands, U.S.')),
+        ('VN', _('Vietnam')),
+        ('VU', _('Vanuatu')),
+        ('WF', _('Wallis and Futuna')),
+        ('WS', _('Samoa')),
+        ('YE', _('Yemen')),
+        ('YT', _('Mayotte')),
+        ('ZA', _('South Africa')),
+        ('ZM', _('Zambia')),
+        ('ZW', _('Zimbabwe')),
     ]
 
     #
     # Since the user's locale may make these country names in non-alpha order,
     # We prepend the country code to the country name string.
     #
-    COUNTRY_CODES = [ (code, _(u'%(code)s: %(name)s') % {
+    COUNTRY_CODES = [ (code, _('%(code)s: %(name)s') % {
         'code': code, 'name': name
     }) for (code, name) in COUNTRY_CODES ]
 
@@ -459,7 +464,7 @@ class CountrySegmentPluginModel(SegmentBasePluginModel):
 
     @property
     def configuration_string(self):
-        return _(u'%(name)s (%(code)s)' % {
+        return _('%(name)s (%(code)s)' % {
             'name': self.country_code_names[self.country_code],
             'code': self.country_code,
         })
@@ -471,9 +476,10 @@ class AuthenticatedSegmentPluginModel(SegmentBasePluginModel):
 
     @property
     def configuration_string(self):
-        return _(u'is Authenticated')
+        return _('is Authenticated')
 
 
+@python_2_unicode_compatible
 class Segment(models.Model):
     '''
     This is a hollow, unmanaged model that simply allows us to attach custom
@@ -482,3 +488,6 @@ class Segment(models.Model):
 
     class Meta:
         managed=False
+
+    def __str__(self):
+        return 'Segment is an empty, unmanaged model.'

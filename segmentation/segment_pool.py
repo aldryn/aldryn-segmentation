@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import Promise
 from django.utils.translation import activate, get_language, ugettext_lazy as _
+
 from cms.exceptions import PluginAlreadyRegistered, PluginNotRegistered
 from cms.plugin_pool import plugin_pool
 
@@ -27,6 +30,7 @@ class SegmentOverride:
     ]
 
 
+@python_2_unicode_compatible
 class SegmentPool(object):
     '''
     This maintains a set of nested sorted dicts containing, among other
@@ -317,6 +321,11 @@ class SegmentPool(object):
                 )
 
         return self._sorted_segments[lang]
+
+
+    def __str__(self):
+        # Punt!
+        return self.segments
 
 
 segment_pool = SegmentPool()

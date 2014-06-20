@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from django.utils.translation import ugettext_lazy as _
 
 from cms.plugin_pool import plugin_pool
@@ -41,7 +42,7 @@ class SwitchSegmentPlugin(SegmentPluginBase):
     '''
 
     model = SwitchSegmentPluginModel
-    name = _('Segment by Switch')
+    name = _('Segment by switch')
 
     # It doesn't make much sense to override this one...
     allow_overrides = False
@@ -59,7 +60,7 @@ class CookieSegmentPlugin(SegmentPluginBase):
     '''
 
     model = CookieSegmentPluginModel
-    name = _('Segment by Cookie')
+    name = _('Segment by cookie')
 
     def is_context_appropriate(self, context, instance):
         request = context.get('request')
@@ -83,7 +84,7 @@ class CountrySegmentPlugin(SegmentPluginBase):
     #
 
     model = CountrySegmentPluginModel
-    name = _('Segment by Country')
+    name = _('Segment by country')
 
     def is_context_appropriate(self, context, instance):
         code = context.get('COUNTRY_CODE')
@@ -103,7 +104,7 @@ class AuthenticatedSegmentPlugin(SegmentPluginBase):
     #
 
     model = AuthenticatedSegmentPluginModel
-    name = _('Segment by Auth')
+    name = _('Segment by auth')
 
     def is_context_appropriate(self, context, instance):
         request = context.get('request')
