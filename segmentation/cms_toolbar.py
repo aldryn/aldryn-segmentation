@@ -23,7 +23,6 @@ class SegmentToolbar(CMSToolbar):
         )
 
 
-    # TODO: We should move pool-implementation-specific logic back to the pool?
     def create_segmentation_menu(self, user, toolbar, csrf_token):
         '''
         Using the SegmentPool, create a segmentation menu.
@@ -31,11 +30,6 @@ class SegmentToolbar(CMSToolbar):
 
         # NOTE: This is a list of tuples now...
         pool = segment_pool.get_registered_segments()
-
-        overrides_list = [
-            (SegmentOverride.ForcedActive, _('Forced Active')),
-            (SegmentOverride.ForcedInactive, _('Forced Inactive'))
-        ]
 
         num_overrides = segment_pool.get_num_overrides_for_user(user)
 
@@ -64,7 +58,12 @@ class SegmentToolbar(CMSToolbar):
                 config_menu = SubMenu(config_str, csrf_token)
                 segment_class_menu.add_item(config_menu)
 
-                for override, override_label in overrides_list:
+                for override, override_label in SegmentOverride.overrides_list:
+                    if override == SegmentOverride.NoOverride:
+                        # We don't really want to show the 'No override' as an
+                        # actionable item.
+                        continue
+
                     active = bool(override == user_override)
 
                     if active:

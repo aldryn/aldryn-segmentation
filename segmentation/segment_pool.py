@@ -3,7 +3,7 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
-from django.utils.translation import get_language, ugettext
+from django.utils.translation import get_language, ugettext, ugettext_lazy as _
 from cms.exceptions import PluginAlreadyRegistered, PluginNotRegistered
 from cms.plugin_pool import plugin_pool
 
@@ -18,6 +18,13 @@ logger = logging.getLogger(__name__)
 #
 class SegmentOverride:
     NoOverride, ForcedActive, ForcedInactive = range(3)
+
+    overrides_list = [
+        (NoOverride, _('No override')),
+        (ForcedActive, _('Forced active')),
+        (ForcedInactive, _('Forced inactive')),
+    ]
+
 
 
 class SegmentPool(object):
@@ -199,7 +206,7 @@ class SegmentPool(object):
         for segment_class_name, segment_class in self.segments.iteritems():
             for config_str, config in segment_class['CONFIGURATIONS'].iteritems():
                 for username, override in config['OVERRIDES'].iteritems():
-                    if username == user.username and int(override):
+                    if username == user.username and override > 0:
                         num += 1
         return num
 
