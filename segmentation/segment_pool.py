@@ -56,7 +56,6 @@ class SegmentPool(object):
 
     def __init__(self):
         self.segments = dict()
-        # TODO: wrap this shadow dict of dicts into an abstraction layer?
         self._sorted_segments = dict()
         self.discover()
 
