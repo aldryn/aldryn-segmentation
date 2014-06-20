@@ -3,6 +3,8 @@
 from django.utils.translation import ugettext_lazy as _
 from cms.plugin_base import CMSPluginBase
 
+import logging
+logger = logging.getLogger(__name__)
 
 class SegmentPluginBase(CMSPluginBase):
     '''
@@ -45,7 +47,11 @@ class SegmentPluginBase(CMSPluginBase):
         from ..segment_pool import segment_pool, SegmentOverride
 
         if self.allow_overrides and hasattr(instance, 'configuration_string'):
-            return segment_pool.get_override_for_segment(context['request'].user, self.__class__.__name__, instance.configuration_string)
+            return segment_pool.get_override_for_segment(
+                context['request'].user,
+                self.__class__.__name__,
+                instance.configuration_string
+            )
 
         return SegmentOverride.NoOverride
 

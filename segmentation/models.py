@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
-from django.utils.translation import ugettext, ugettext_lazy as _, ugettext_noop
+from django.utils.translation import ugettext, ugettext_lazy as _
 
 from cms.models import CMSPlugin
 
@@ -35,11 +35,11 @@ class SegmentLimitPluginModel(CMSPlugin):
     @property
     def configuration_string(self):
         if self.max_children == 0:
-            return ugettext_noop(u'Show All')
+            return _(u'Show All')
         elif self.max_children == 1:
-            return ugettext_noop(u'Show First')
+            return _(u'Show First')
         else:
-            return ugettext_noop(u'Show First %d') % self.max_children
+            return _(u'Show First %d' % self.max_children)
 
 
     def __unicode__(self):
@@ -73,8 +73,8 @@ class SegmentBasePluginModel(CMSPlugin):
     @property
     def configuration_string(self):
         '''
-        Return a ugettext_ object that represents the configuration for the
-        plugin instance in a unique, concise manner that is suitable for a
+        Return a ugettext_lazy object that represents the configuration for
+        the plugin instance in a unique, concise manner that is suitable for a
         toolbar menu option.
 
         Some Examples:
@@ -108,7 +108,7 @@ class FallbackSegmentPluginModel(SegmentBasePluginModel):
 
     @property
     def configuration_string(self):
-        return ugettext_noop(u'Always active')
+        return _(u'Always active')
 
 
 class SwitchSegmentPluginModel(SegmentBasePluginModel):
@@ -121,9 +121,9 @@ class SwitchSegmentPluginModel(SegmentBasePluginModel):
     @property
     def configuration_string(self):
         if self.on_off:
-            return ugettext_noop(u'Always ON')
+            return _(u'Always ON')
         else:
-            return ugettext_noop(u'Always OFF')
+            return _(u'Always OFF')
 
 
 class CookieSegmentPluginModel(SegmentBasePluginModel):
@@ -160,10 +160,10 @@ class CookieSegmentPluginModel(SegmentBasePluginModel):
 
     @property
     def configuration_string(self):
-        return ugettext_noop(u'“%(key)s” equals “%(value)s”') % {
+        return _(u'“%(key)s” equals “%(value)s”' % {
             'key': self.cookie_key,
             'value': self.cookie_value,
-        }
+        })
 
 
 class CountrySegmentPluginModel(SegmentBasePluginModel):
@@ -459,10 +459,10 @@ class CountrySegmentPluginModel(SegmentBasePluginModel):
 
     @property
     def configuration_string(self):
-        return ugettext_noop(u'%(name)s (%(code)s)') % {
+        return _(u'%(name)s (%(code)s)' % {
             'name': self.country_code_names[self.country_code],
             'code': self.country_code,
-        }
+        })
 
 
 class AuthenticatedSegmentPluginModel(SegmentBasePluginModel):
@@ -471,7 +471,7 @@ class AuthenticatedSegmentPluginModel(SegmentBasePluginModel):
 
     @property
     def configuration_string(self):
-        return ugettext_noop(u'is Authenticated')
+        return _(u'is Authenticated')
 
 
 class Segment(models.Model):

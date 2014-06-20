@@ -55,7 +55,7 @@ class SegmentToolbar(CMSToolbar):
                     config_str
                 )
 
-                config_menu = SubMenu(config_str, csrf_token)
+                config_menu = SubMenu(config['LABEL'], csrf_token)
                 segment_class_menu.add_item(config_menu)
 
                 for override, override_label in SegmentOverride.overrides_list:

@@ -49,7 +49,8 @@ Known Issues
 
 This is a list of known issues that are being worked on...
 
-- [ ] The Segment config portion of the Segment menu isn't translated.
+There are no known issues (under Django 1.6) at this time. If you've found
+something, please open a ticket!
 
 
 Installation
