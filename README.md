@@ -49,9 +49,7 @@ Known Issues
 
 This is a list of known issues that are being worked on...
 
-### Important
-- [ ] The toolbar menu doesn't indicate which branches have active overrides
-      (limitation of CMS!)
+- [ ] The Segment config portion of the Segment menu isn't translationed.
 
 
 Installation
@@ -61,6 +59,8 @@ At this time, the package is not submitted to PyPi, but you can still use pip
 if you like. Here's how to get started quickly:
 
 
+1. Make sure you're using a version of django-CMS that is later than
+   3.0.2.dev1, otherwise the Segment menu will not appear correctly.
 1. pip install https://github.com/aldryn/aldryn-segmentation/archive/master.zip
 1. Add 'segmentation' to INSTALLED_APPS in your Django project's settings file
 1. python manage.py schemamigration segmentation --initial
@@ -69,6 +69,7 @@ if you like. Here's how to get started quickly:
 At this point you should be good to go. When you next run your project, the
 first thing you may notice is that you have new–albeit empty–'Segments' menu
 in your toolbar.
+
 
 Basic Usage
 -----------

@@ -63,6 +63,10 @@ class SegmentToolbar(CMSToolbar):
                 segment_class_menu.add_item(config_menu)
 
                 for override_label, override in [(_('Forced Active'), SegmentOverride.ForcedActive), (_('Forced Inactive'), SegmentOverride.ForcedInactive)]:
+                    active = bool(override == user_override)
+                    if active:
+                        config_menu.active = True
+                        segment_class_menu.active = True
                     config_menu.add_ajax_item(
                         override_label,
                         action=reverse('admin:set_segment_override'),
@@ -71,7 +75,7 @@ class SegmentToolbar(CMSToolbar):
                             'segment_config': config_str,
                             'override': override if (override != user_override) else SegmentOverride.NoOverride,
                         },
-                        active=bool(override == user_override),
+                        active=active,
                         on_success=toolbar.REFRESH_PAGE
                     )
 
