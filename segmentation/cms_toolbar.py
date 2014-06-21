@@ -12,7 +12,6 @@ from cms.toolbar.items import SubMenu, Break, AjaxItem
 from .segment_pool import segment_pool, SegmentOverride
 
 
-
 @toolbar_pool.register
 class SegmentToolbar(CMSToolbar):
 
@@ -30,8 +29,12 @@ class SegmentToolbar(CMSToolbar):
         Using the SegmentPool, create a segmentation menu.
         '''
 
-        # NOTE: This is a list of tuples now...
         pool = segment_pool.get_registered_segments()
+
+        # Get the magic strings required for working with the pool's structure.
+        CFGS = segment_pool.CFGS
+        NAME = segment_pool.NAME
+        LABEL = segment_pool.LABEL
 
         num_overrides = segment_pool.get_num_overrides_for_user(user)
 
@@ -42,14 +45,14 @@ class SegmentToolbar(CMSToolbar):
         )
 
         for segment_class_name, segment_class in pool:
-            segment_name = segment_class['NAME']
+            segment_name = segment_class[NAME]
 
             segment_class_menu = segment_menu.get_or_create_menu(
                 segment_class_name,
                 segment_name
             )
 
-            for config_str, config in segment_class['CONFIGURATIONS']:
+            for config_str, config in segment_class[CFGS]:
 
                 user_override = segment_pool.get_override_for_segment(
                     user,
@@ -57,7 +60,7 @@ class SegmentToolbar(CMSToolbar):
                     config_str
                 )
 
-                config_menu = SubMenu(config['LABEL'], csrf_token)
+                config_menu = SubMenu(config[LABEL], csrf_token)
                 segment_class_menu.add_item(config_menu)
 
                 for override, override_label in SegmentOverride.overrides_list:
