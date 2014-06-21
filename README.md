@@ -45,7 +45,15 @@ django CMS.
 
 ### Other:
 - [ ] Move the Country Segment and its related bits to another repo?
-- [ ] Need to ensure works on all supported Djangos and Pythons
+- [x] Ensure compatibility with supported Pythons (vs. Django 1.6)
+	  - [x] Python 2.6.x
+      - [x] Python 2.7.x
+      - [x] Python 3.3.x
+      - [x] Python 3.4.x
+- [ ] Ensure compatibility with supported Djangos (vs. Python 2.7)
+      - [ ] Django 1.4.x
+      - [ ] Django 1.5.x - Issue with copy.deepcopy()
+      - [x] Django 1.6.x
 
 
 Known Issues
