@@ -108,22 +108,23 @@ class SegmentBasePluginModel(CMSPlugin):
         In cases where the returned string is composed with placeholders, E.g.:
 
             Cookie:
-                '“{key}” equals “{value}”'.format(
+                ugettext_lazy('“{key}” equals “{value}”').format(
                     key=self.key,
                     value=self.value
                 )
 
-        You *must* actually return a lazy wrapper around the gettext_lazy
-        operation as follows:
+        You *must* actually return a evaluated, lazy wrapper around the
+        gettext_lazy operation as follows:
 
             def configuration_string(self):
                 wrapper():
-                    return '“{key}” equals “{value}”'.format(
+                    return ugettext_lazy('“{key}” equals “{value}”').format(
                         key=self.key,
                         value=self.value
                     )
 
-                return lazy(wrapper, six.text_type)
+                # NOTE: the trailing '()'
+                return lazy(wrapper, six.text_type)()
 
         Otherwise, the translations won't happen.
 
@@ -221,7 +222,7 @@ class CookieSegmentPluginModel(SegmentBasePluginModel):
         return lazy(
             wrapper,
             six.text_type
-        )
+        )()
 
 
 class CountrySegmentPluginModel(SegmentBasePluginModel):
@@ -525,7 +526,7 @@ class CountrySegmentPluginModel(SegmentBasePluginModel):
         return lazy(
             wrapper,
             six.text_type
-        )
+        )()
 
 
 class AuthenticatedSegmentPluginModel(SegmentBasePluginModel):

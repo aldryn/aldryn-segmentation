@@ -131,16 +131,14 @@ class SegmentPool(object):
             activate('en')
 
             if isinstance(plugin_config, types.FunctionType):
-                logger.info('register_segment: plugin_config appears to be a lazy function.')
                 plugin_config_key = force_text( plugin_config() )
             elif isinstance(plugin_config, Promise):
-                logger.info('register_segment: plugin_config appears to be a lazy translation object.')
                 plugin_config_key = force_text(plugin_config)
             elif isinstance(plugin_config, six.text_type):
-                logger.info('register_segment: plugin_config appears to be a string of text.')
                 plugin_config_key = plugin_config
             else:
-                logger.warn('register_segment: Not really sure what configuration_string returned!')
+                logger.warn('register_segment: Not really sure what '
+                            'configuration_string returned!')
 
             activate(lang)
 
@@ -266,16 +264,12 @@ class SegmentPool(object):
         lang = get_language()
         activate('en')
         if isinstance(segment_config, types.FunctionType):
-            logger.info('segment_config appears to be a lazy function.')
             segment_key = force_text( segment_config() )
         elif isinstance(segment_config, Promise):
-            logger.info('segment_config appears to be a lazy translation object.')
             segment_key = force_text(segment_config)
         elif isinstance(segment_config, six.text_type):
-            logger.info('segment_config appears to be a string of text.')
             segment_key = segment_config
         else:
-            logger.warn('Not really sure what segment_config is!')
             segment_key = segment_config
         activate(lang)
 
@@ -285,13 +279,14 @@ class SegmentPool(object):
             if user.username in overrides:
                 #  TODO: I don't like this int-casting used here or anywhere.
                 return int(overrides[user.username])
+
         except KeyError:
-            if not isinstance(segment_config, (Promise, types.FunctionType, )):
+            if not isinstance(segment_config, Promise):
                 import inspect
-                #
                 # TODO: This should be stronger than a log. (warning or exception?)
-                #
-                logger.error(u'get_override_for_segment received segment_config: “%s” as type %s from: %s. This has resulted in a failure to retrieve a segment override.' % (
+                logger.error(u'get_override_for_segment received '
+                    'segment_config: “%s” as type %s from: %s. This has '
+                    'resulted in a failure to retrieve a segment override.' % (
                         segment_config,
                         type(segment_config),
                         inspect.stack()[1][3])

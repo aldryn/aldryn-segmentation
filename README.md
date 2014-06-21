@@ -30,8 +30,12 @@ Development Status
 - [x] Displays no. of overrides in Segment menu name
 
 ### Tests:
-- [ ] Segment Pool tests
+
+Actually, not really sure how to set-up testing for an app that one adds to
+django CMS.
+
 - [ ] Segment logic tests
+- [ ] Segment Pool tests
 - [ ] I18N tests
 - [ ] Multiple operator tests
 
