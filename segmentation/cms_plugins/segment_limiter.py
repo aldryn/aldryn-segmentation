@@ -59,13 +59,10 @@ class SegmentLimitPlugin(SegmentPluginBase):
             child_plugin = child_instance.get_plugin_class_instance()
 
             if render_all or slots_remaining > 0:
-                #
-                # We're allowing all 'ducks' here, but it may make sense to
-                # instead use isinstance(...)
-                #
+
                 if hasattr(child_plugin, 'is_context_appropriate'):
                     #
-                    # This is a segment plugin... or at least quacks like one.
+                    # This quacks like a segment plugin...
                     #
                     if (hasattr(child_plugin, 'allow_overrides') and
                             child_plugin.allow_overrides and
