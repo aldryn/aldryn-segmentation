@@ -4,8 +4,6 @@ from __future__ import unicode_literals
 
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
-from django.db.models.signals import post_save, pre_delete
-from django.dispatch import receiver
 from django.utils import six
 from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.utils.functional import Promise
@@ -15,8 +13,8 @@ from cms.exceptions import PluginAlreadyRegistered, PluginNotRegistered
 from cms.plugin_pool import plugin_pool
 from cms.toolbar.items import SubMenu, Break, AjaxItem
 
-from .cms_plugins import SegmentPluginBase
-from .models import SegmentBasePluginModel
+from ..cms_plugins import SegmentPluginBase
+from ..models import SegmentBasePluginModel
 
 import logging
 logger = logging.getLogger(__name__)
@@ -270,9 +268,57 @@ class SegmentPool(object):
         return num
 
 
+    def get_override_for_classname(self, user, plugin_class_name, segment_config):
+        '''
+        Given the user, plugin_class_name and segment_config, return the
+        current override, if any.
+        '''
+
+        #
+        # Note: segment_config can be either of:
+        # 
+        # 1. A number string of text
+        # 2. A lazy translation object (Promise)
+        #
+
+        lang = get_language()
+        activate('en')
+        if isinstance(segment_config, Promise):
+            segment_key = force_text(segment_config)
+        elif isinstance(segment_config, six.text_type):
+            segment_key = segment_config
+        else:
+            segment_key = segment_config
+        activate(lang)
+
+        try:
+            overrides = self.segments[plugin_class_name][self.CFGS][segment_key][self.OVERRIDES]
+
+            if user.username in overrides:
+                #  TODO: I don't like this int-casting used here or anywhere.
+                return int(overrides[user.username])
+
+        except KeyError:
+            if not isinstance(segment_config, Promise):
+                import inspect
+                # TODO: This should be stronger than a log. (warning or exception?)
+                logger.error(u'get_override_for_segment received '
+                    'segment_config: “%s” as type %s from: %s. This has '
+                    'resulted in a failure to retrieve a segment override.' % (
+                        segment_config,
+                        type(segment_config),
+                        inspect.stack()[1][3])
+                )
+
+        return SegmentOverride.NoOverride
+
+
     def get_override_for_segment(self, user, plugin_class_instance, plugin_instance):
         '''
-        Given a specific segment/configuration, return the current override.
+        Given a specific user, plugin class and instance, return the current
+        override. This is a wrapper around get_override_for_classname() and
+        provides the appropriate duck-checking and is therefore more useful as
+        an external entry-point into the segment_pool.
         '''
 
         if (hasattr(plugin_class_instance, 'allow_overrides') and
@@ -282,47 +328,8 @@ class SegmentPool(object):
             segment_class = plugin_class_instance.__class__.__name__
             segment_config = plugin_instance.configuration_string
 
-            #
-            # Note: segment_config can be either of:
-            # 
-            # 1. A number string of text
-            # 2. A lazy translation object (Promise)
-            #
+            return self.get_override_for_classname(user, segment_class, segment_config)
 
-            lang = get_language()
-            activate('en')
-            if isinstance(segment_config, Promise):
-                segment_key = force_text(segment_config)
-            elif isinstance(segment_config, six.text_type):
-                segment_key = segment_config
-            else:
-                segment_key = segment_config
-            activate(lang)
-
-            try:
-                overrides = self.segments[segment_class][self.CFGS][segment_key][self.OVERRIDES]
-
-                if user.username in overrides:
-                    #  TODO: I don't like this int-casting used here or anywhere.
-                    return int(overrides[user.username])
-
-            except KeyError:
-                if not isinstance(segment_config, Promise):
-                    import inspect
-                    # TODO: This should be stronger than a log. (warning or exception?)
-                    logger.error(u'get_override_for_segment received '
-                        'segment_config: “%s” as type %s from: %s. This has '
-                        'resulted in a failure to retrieve a segment override.' % (
-                            segment_config,
-                            type(segment_config),
-                            inspect.stack()[1][3])
-                    )
-
-        #
-        # Either, this doesn't quack right, or, this plugin just wasn't found,
-        # or it just doesn't have an override for this user. So, there's no
-        # override.
-        #
         return SegmentOverride.NoOverride
 
 
@@ -411,7 +418,7 @@ class SegmentPool(object):
 
             for config_str, config in segment_class[self.CFGS]:
 
-                user_override = segment_pool.get_override_for_segment(
+                user_override = segment_pool.get_override_for_classname(
                     user,
                     segment_class_name,
                     config_str
@@ -468,45 +475,3 @@ class SegmentPool(object):
 
 
 segment_pool = SegmentPool()
-
-
-@receiver(post_save)
-def register_segment(sender, instance, created, **kwargs):
-    '''
-    Ensure that saving changes in the model results in the de-registering (if
-    necessary) and registering of this segment plugin.
-    '''
-
-    #
-    # NOTE: Removed the test if instance is the right type from here, as it is
-    # already the first thing that happens in the (un)register_plugin()
-    # methods. Its not these signal handlers' job to decide who gets to be
-    # registered and who doesn't.
-    #
-
-    if not created:
-        try:
-            segment_pool.unregister_segment_plugin(instance)
-        except (PluginNotRegistered, ImproperlyConfigured):
-            pass
-
-    # Either way, we register it.
-    try:
-        segment_pool.register_segment_plugin(instance)
-    except (PluginNotRegistered, ImproperlyConfigured):
-        pass
-
-
-@receiver(pre_delete)
-def unregister_segment(sender, instance, **kwargs):
-    '''
-    Listens for signals that a SegmentPlugin instance is to be deleted, and
-    un-registers it from the segment_pool.
-    '''
-
-    # NOTE: See note in register_segment()
-
-    try:
-        segment_pool.unregister_segment_plugin(instance)
-    except (PluginNotRegistered, ImproperlyConfigured):
-        pass
