@@ -25,8 +25,10 @@ class SegmentLimitPlugin(SegmentPluginBase):
     allow_overrides = False
 
     def render(self, context, instance, placeholder):
-        context = super(SegmentLimitPlugin, self).render(context, instance, placeholder)
-        context['child_plugins'] = self.get_context_appropriate_children(context, instance)
+        context = super(SegmentLimitPlugin, self).render(
+            context, instance, placeholder)
+        context['child_plugins'] = self.get_context_appropriate_children(
+            context, instance)
         return context
 
 
@@ -65,9 +67,12 @@ class SegmentLimitPlugin(SegmentPluginBase):
                     #
                     # This is a segment plugin... or at least quacks like one.
                     #
-                    if hasattr(child_plugin, 'allow_overrides') and child_plugin.allow_overrides and hasattr(child_plugin, 'get_segment_override'):
+                    if (hasattr(child_plugin, 'allow_overrides') and
+                            child_plugin.allow_overrides and
+                            hasattr(child_plugin, 'get_segment_override')):
 
-                        override = child_plugin.get_segment_override(context, child_instance)
+                        override = child_plugin.get_segment_override(
+                            context, child_instance)
 
                         if override == SegmentOverride.ForcedActive:
                             child = (child_instance, True)
@@ -75,9 +80,15 @@ class SegmentLimitPlugin(SegmentPluginBase):
                             child = (child_instance, False)
                         else:
                             #
-                            # There's no override, so, just let the segment decide...
+                            # There's no override, so, just let the segment
+                            # decide...
                             #
-                            child = (child_instance, child_plugin.is_context_appropriate(context, child_instance), )
+                            child = (
+                                child_instance,
+                                child_plugin.is_context_appropriate(
+                                    context, child_instance
+                                ),
+                            )
                     else:
                         #
                         # Hmmm, this segment plugin appears to have no
@@ -85,7 +96,12 @@ class SegmentLimitPlugin(SegmentPluginBase):
                         # method. OK then, let the plugin decide if it is
                         # appropriate to render.
                         #
-                        child = (child_instance, child_plugin.is_context_appropriate(context, child_instance), )
+                        child = (
+                            child_instance,
+                            child_plugin.is_context_appropriate(
+                                context, child_instance
+                            ),
+                        )
                 else:
                     #
                     # This doesn't quack like a Segment Plugin, so, it is

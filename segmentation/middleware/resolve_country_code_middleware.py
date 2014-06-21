@@ -32,5 +32,6 @@ class ResolveCountryCodeMiddleware(object):
 
 
     def process_request(self, request):
-        ipa = request.META.get("HTTP_X_FORWARDED_FOR", request.META["REMOTE_ADDR"])
+        ipa = request.META.get("HTTP_X_FORWARDED_FOR",
+            request.META["REMOTE_ADDR"])
         request.META['COUNTRY_CODE'] = self.get_country_code(ipa)

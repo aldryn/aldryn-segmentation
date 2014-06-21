@@ -25,7 +25,8 @@ class RenderSegmentPlugin(InclusionTag):
         #
         # TODO: This code is remarkably similar to a block in
         # ..cms_plugins.segment_limiter. Consider moving it into the
-        # SegmentPluginBase class and the two blocks here and in the limiter.
+        # SegmentPluginBase class and accessing it from the two blocks here and
+        # in the limiter.
         #
         child_plugin = plugin_instance.get_plugin_class_instance()
 
@@ -33,8 +34,10 @@ class RenderSegmentPlugin(InclusionTag):
             #
             # This is a segment plugin... or at least quacks like one.
             #
-            if child_plugin.allow_overrides and hasattr(child_plugin, 'get_segment_override'):
-                override = child_plugin.get_segment_override(context, plugin_instance)
+            if (child_plugin.allow_overrides and
+                    hasattr(child_plugin, 'get_segment_override')):
+                override = child_plugin.get_segment_override(
+                    context, plugin_instance)
                 
                 if override == SegmentOverride.ForcedActive:
                     return True
@@ -56,8 +59,8 @@ class RenderSegmentPlugin(InclusionTag):
         #
         # NOTE: This code should be more or less identical to that of
         # cms.templatetags.cms_tags.RenderPlugin(). Once this application gets
-        # to a steady state, consider a PR to django CMS to pull this code
-        # into it's own get_processors() method, then this tag will be able to
+        # to a steady state, consider a PR to django CMS to pull this code into
+        # it's own get_processors() method, then this tag will be able to just
         # subclass RenderPlugin.
         # --------------------------------------------------------------------
         edit = False
@@ -103,7 +106,8 @@ class RenderSegmentPlugin(InclusionTag):
         # Either this isn't a Segmentation Plugin OR, it is and it is
         # appropriate for rendering in this context. Proceed as usual.
         #
-        return {'content': plugin_instance.render_plugin(context, processors=processors)}
+        return {'content': plugin_instance.render_plugin(
+            context, processors=processors)}
 
 
 register.tag(RenderSegmentPlugin)

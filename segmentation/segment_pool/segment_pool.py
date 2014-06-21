@@ -33,7 +33,6 @@ class SegmentOverride:
     ]
 
 
-
 @python_2_unicode_compatible
 class SegmentPool(object):
     '''
@@ -56,15 +55,28 @@ class SegmentPool(object):
         }
     }
 
-    NOTE: The key for a given configuration is the configuration string realised
-    as 'en' unicode. The unresolved gettext proxy of the same is stored under
-    the key LABEL.
+    The outer-most dict organizes everything by the class name of the plugin.
+    The actual human-readable version of the plugin's type name is stored
+    under the key 'NAME'.
 
-    Although this is implmented as a non-persistent, system-wide singleton, it
-    is shared by all operators of the system. In order to keep them from
-    setting overrides against each other, we need to be able to store per-
-    operator overrides. We do this by keying the overrides with the user id of
-    the operator who created it.
+    Each plugin's unique configuration is stored in the plugin type's CFGS
+    dict keyed with the instance's configuration_string realised as 'en'
+    unicode. The unresolved version of the string--usually a lazy translation
+    proxy object--is stored under the configuration's 'LABEL' key. This allows
+    translation to any other language (that is in the gettext catalog) at
+    will. This is also used for correctly sorting the configurations in the
+    current language.
+
+    This is implmented as a non-persistent, system-wide singleton, it is
+    shared by all operators of the system. In order to keep overrides for each
+    user distinct, they are stored in the OVERRIDES dict, keyed with the
+    user's username.
+
+    Plugin instances are recorded in the INSTANCES list. As well as allowing
+    us to find instances that have changed their configuration (likely to
+    happen when an operator changes the plugin's configuration), this allows
+    us to prune no-longer relevant parts of this structure as instances are
+    de-registered.
     '''
 
     #
@@ -276,7 +288,7 @@ class SegmentPool(object):
 
         #
         # Note: segment_config can be either of:
-        # 
+        #
         # 1. A number string of text
         # 2. A lazy translation object (Promise)
         #
@@ -470,7 +482,11 @@ class SegmentPool(object):
 
 
     def __str__(self):
-        # Punt!
+        '''
+        Returns the whole segment_pool structure. Useful for debugging. Not
+        much else.
+        '''
+
         return self.segments
 
 
