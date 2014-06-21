@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+
+import types
+
 from django.db import models
+from django.utils import six
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils.functional import lazy
 from django.utils.translation import ugettext, ugettext_lazy as _, string_concat
 
 from cms.models import CMSPlugin
+
 
 #
 # NOTE: The SegmentLimitPluginModel does NOT subclass SegmentBasePluginModel
@@ -46,6 +52,11 @@ class SegmentLimitPluginModel(CMSPlugin):
 
 
     def __str__(self):
+        '''
+        If there is a label, show that with the configuration in brackets,
+        otherwise, just return the configuration string.
+        '''
+
         if self.label:
             return _('%(label)s [%(config)s]') % {
                 'label': self.label,
@@ -78,9 +89,9 @@ class SegmentBasePluginModel(CMSPlugin):
     @property
     def configuration_string(self):
         '''
-        Return a ugettext_lazy object that represents the configuration for
-        the plugin instance in a unique, concise manner that is suitable for a
-        toolbar menu option.
+        Return a ugettext_lazy object (or a lazy function that returns the
+        same) that represents the configuration for the plugin instance in a
+        unique, concise manner that is suitable for a toolbar menu option.
 
         Some Examples:
             Cookie:
@@ -94,19 +105,57 @@ class SegmentBasePluginModel(CMSPlugin):
             Limit:
                 'Show First'
 
+        In cases where the returned string is composed with placeholders, E.g.:
+
+            Cookie:
+                '“{key}” equals “{value}”'.format(
+                    key=self.key,
+                    value=self.value
+                )
+
+        You *must* actually return a lazy wrapper around the gettext_lazy
+        operation as follows:
+
+            def configuration_string(self):
+                wrapper():
+                    return '“{key}” equals “{value}”'.format(
+                        key=self.key,
+                        value=self.value
+                    )
+
+                return lazy(wrapper, six.text_type)
+
+        Otherwise, the translations won't happen.
+
+        This construction is not required for untranslated or non-
+        parameterized translations.
+
+
         NOTE: Each subclass must override to suit.
         '''
         raise NotImplementedError("Please Implement this method")
 
 
     def __str__(self):
+        '''
+        If there is a label, show that with the configuration in brackets,
+        otherwise, just return the configuration string.
+        '''
+
+        conf = self.configuration_string
+
+        if isinstance(conf, types.FunctionType):
+            conf_str = conf()
+        else:
+            conf_str = conf
+
         if self.label:
             return _('%(label)s [%(config)s]') % {
                 'label': self.label,
-                'config': self.configuration_string,
+                'config': conf_str,
             }
         else:
-            return self.configuration_string
+            return conf_str
 
 
 class FallbackSegmentPluginModel(SegmentBasePluginModel):
@@ -165,7 +214,14 @@ class CookieSegmentPluginModel(SegmentBasePluginModel):
 
     @property
     def configuration_string(self):
-        return string_concat('“', self.cookie_key, '”', _(' equals '), '“', self.cookie_value, '”')
+
+        def wrapper():
+            return _('“{key}” equals “{value}”').format(key=self.cookie_key, value=self.cookie_value)
+
+        return lazy(
+            wrapper,
+            six.text_type
+        )
 
 
 class CountrySegmentPluginModel(SegmentBasePluginModel):
@@ -462,7 +518,14 @@ class CountrySegmentPluginModel(SegmentBasePluginModel):
 
     @property
     def configuration_string(self):
-        return string_concat(self.country_code_names[self.country_code], _(' ('), self.country_code, _(')'))
+
+        def wrapper():
+            return _('{name} ({code})').format(name=self.country_code_names[self.country_code], code=self.country_code)
+
+        return lazy(
+            wrapper,
+            six.text_type
+        )
 
 
 class AuthenticatedSegmentPluginModel(SegmentBasePluginModel):

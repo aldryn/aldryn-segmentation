@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+
+import types
+
 from django.core.exceptions import ImproperlyConfigured
-from django.db.models.signals import pre_delete, post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
-from django.utils.encoding import python_2_unicode_compatible
+from django.utils import six
+from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.utils.functional import Promise
 from django.utils.translation import activate, get_language, ugettext_lazy as _
 
@@ -16,6 +20,7 @@ from .models import SegmentBasePluginModel
 
 import logging
 logger = logging.getLogger(__name__)
+
 
 #
 # A simple enum so we can use the same code in Python's < 3.4.
@@ -91,6 +96,12 @@ class SegmentPool(object):
         Raises:
             PluginAlreadyRegistered: if the plugin is already registered and
             ImproperlyConfigured: if not an appropriate type of plugin.
+
+        Note: plugin_instance.configuration_string can return any of these:
+
+        1. A number string of text
+        2. A lazy translation object (Promise)
+        3. A lazy function which returns a lazy translation object (Function)
         '''
 
         plugin_class_instance = plugin_instance.get_plugin_class_instance()
@@ -111,13 +122,26 @@ class SegmentPool(object):
             segment_class = self.segments[plugin_class_name]
 
             plugin_config = plugin_instance.configuration_string
+
             #
             # NOTE: We always use the 'en' version of the configuration string
             # as the key.
             #
             lang = get_language()
             activate('en')
-            plugin_config_key = unicode(plugin_config)
+
+            if isinstance(plugin_config, types.FunctionType):
+                logger.info('register_segment: plugin_config appears to be a lazy function.')
+                plugin_config_key = force_text( plugin_config() )
+            elif isinstance(plugin_config, Promise):
+                logger.info('register_segment: plugin_config appears to be a lazy translation object.')
+                plugin_config_key = force_text(plugin_config)
+            elif isinstance(plugin_config, six.text_type):
+                logger.info('register_segment: plugin_config appears to be a string of text.')
+                plugin_config_key = plugin_config
+            else:
+                logger.warn('register_segment: Not really sure what configuration_string returned!')
+
             activate(lang)
 
             segment_configs = segment_class['CONFIGURATIONS']
@@ -232,16 +256,28 @@ class SegmentPool(object):
     def get_override_for_segment(self, user, segment_class, segment_config):
         '''
         Given a specific segment/configuration, return the current override.
+        Note: segment_config can be any of these 3 things:
+
+        1. A number string of text
+        2. A lazy translation object (Promise)
+        3. A lazy function which returns a lazy translation object (Function)
         '''
 
-        if isinstance(segment_config, Promise):
-            lang = get_language()
-            activate('en')
-            segment_key = unicode(segment_config)
-            activate(lang)
-        else:
-            # TODO: Remove this debugging code
+        lang = get_language()
+        activate('en')
+        if isinstance(segment_config, types.FunctionType):
+            logger.info('segment_config appears to be a lazy function.')
+            segment_key = force_text( segment_config() )
+        elif isinstance(segment_config, Promise):
+            logger.info('segment_config appears to be a lazy translation object.')
+            segment_key = force_text(segment_config)
+        elif isinstance(segment_config, six.text_type):
+            logger.info('segment_config appears to be a string of text.')
             segment_key = segment_config
+        else:
+            logger.warn('Not really sure what segment_config is!')
+            segment_key = segment_config
+        activate(lang)
 
         try:
             overrides = self.segments[segment_class]['CONFIGURATIONS'][segment_key]['OVERRIDES']
@@ -250,7 +286,7 @@ class SegmentPool(object):
                 #  TODO: I don't like this int-casting used here or anywhere.
                 return int(overrides[user.username])
         except KeyError:
-            if not isinstance(segment_key, Promise):
+            if not isinstance(segment_config, (Promise, types.FunctionType, )):
                 import inspect
                 #
                 # TODO: This should be stronger than a log. (warning or exception?)
@@ -317,7 +353,7 @@ class SegmentPool(object):
             for _, segment_class in self._sorted_segments[lang]:
                 segment_class['CONFIGURATIONS'] = sorted(
                     segment_class['CONFIGURATIONS'].items(),
-                    key=lambda x: unicode(x[1]['LABEL'])
+                    key=lambda x: force_text(x[1]['LABEL'])
                 )
 
         return self._sorted_segments[lang]
