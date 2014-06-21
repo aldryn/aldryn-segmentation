@@ -39,19 +39,20 @@ class SegmentPluginBase(CMSPluginBase):
 
     def get_segment_override(self, context, instance):
         '''
-        If this segment plugin allows overrides, then return the current
-        override for this segment, else, returns SegmentOverride.NoOverride.
+        If the current user is logged-in and this segment plugin allows
+        overrides, then return the current override for this segment, else,
+        returns SegmentOverride.NoOverride.
 
         This should NOT be overridden in subclasses.
         '''
 
+        # This can't be defined at the file level, else circular imports
         from ..segment_pool import segment_pool, SegmentOverride
 
-        if self.allow_overrides and hasattr(instance, 'configuration_string'):
+        request = context['request']
+        if request.user.is_authenticated():
             return segment_pool.get_override_for_segment(
-                context['request'].user,
-                self.__class__.__name__,
-                instance.configuration_string
+                request.user, self, instance
             )
 
         return SegmentOverride.NoOverride
