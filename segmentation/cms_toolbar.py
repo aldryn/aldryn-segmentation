@@ -2,8 +2,6 @@
 
 from __future__ import unicode_literals
 
-import types
-
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
@@ -58,13 +56,6 @@ class SegmentToolbar(CMSToolbar):
                     segment_class_name,
                     config_str
                 )
-
-                #
-                # If the config is a lazy function, 'resolve' it before
-                # continuing on.
-                #
-                if isinstance(config, types.FunctionType):
-                    config = config()
 
                 config_menu = SubMenu(config['LABEL'], csrf_token)
                 segment_class_menu.add_item(config_menu)

@@ -2,8 +2,6 @@
 
 from __future__ import unicode_literals
 
-import types
-
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
@@ -97,11 +95,10 @@ class SegmentPool(object):
             PluginAlreadyRegistered: if the plugin is already registered and
             ImproperlyConfigured: if not an appropriate type of plugin.
 
-        Note: plugin_instance.configuration_string can return any of these:
+        Note: plugin_instance.configuration_string can return either of:
 
         1. A number string of text
         2. A lazy translation object (Promise)
-        3. A lazy function which returns a lazy translation object (Function)
         '''
 
         plugin_class_instance = plugin_instance.get_plugin_class_instance()
@@ -130,9 +127,7 @@ class SegmentPool(object):
             lang = get_language()
             activate('en')
 
-            if isinstance(plugin_config, types.FunctionType):
-                plugin_config_key = force_text( plugin_config() )
-            elif isinstance(plugin_config, Promise):
+            if isinstance(plugin_config, Promise):
                 plugin_config_key = force_text(plugin_config)
             elif isinstance(plugin_config, six.text_type):
                 plugin_config_key = plugin_config
@@ -254,18 +249,15 @@ class SegmentPool(object):
     def get_override_for_segment(self, user, segment_class, segment_config):
         '''
         Given a specific segment/configuration, return the current override.
-        Note: segment_config can be any of these 3 things:
+        Note: segment_config can be either of:
 
         1. A number string of text
         2. A lazy translation object (Promise)
-        3. A lazy function which returns a lazy translation object (Function)
         '''
 
         lang = get_language()
         activate('en')
-        if isinstance(segment_config, types.FunctionType):
-            segment_key = force_text( segment_config() )
-        elif isinstance(segment_config, Promise):
+        if isinstance(segment_config, Promise):
             segment_key = force_text(segment_config)
         elif isinstance(segment_config, six.text_type):
             segment_key = segment_config
