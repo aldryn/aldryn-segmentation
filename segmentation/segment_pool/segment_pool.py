@@ -217,7 +217,7 @@ class SegmentPool(object):
                 if plugin_class_name in self.segments:
                     segment_class = self.segments[plugin_class_name]
                     segment_configs = segment_class[self.CFGS]
-                    for configuration, data in segment_configs.iteritems():
+                    for configuration, data in segment_configs.items():
                         if plugin_instance in data[self.INSTANCES]:
                             # Found it! Now remove it...
                             data[self.INSTANCES].remove(plugin_instance)
@@ -256,9 +256,9 @@ class SegmentPool(object):
         Resets (disables) the overrides for all segments.
         '''
 
-        for segment_class in self.segments.itervalues():
-            for configuration in segment_class[self.CFGS].itervalues():
-                for username, override in configuration[self.OVERRIDES].iteritems():
+        for segment_class in self.segments.values():
+            for configuration in segment_class[self.CFGS].values():
+                for username, override in configuration[self.OVERRIDES].items():
                     if username == user.username:
                         configuration[self.OVERRIDES][username] = SegmentOverride.NoOverride
         self._sorted_segments = dict()
@@ -272,9 +272,9 @@ class SegmentPool(object):
         '''
 
         num = 0
-        for segment_class_name, segment_class in self.segments.iteritems():
-            for config_str, config in segment_class[self.CFGS].iteritems():
-                for username, override in config[self.OVERRIDES].iteritems():
+        for segment_class_name, segment_class in self.segments.items():
+            for config_str, config in segment_class[self.CFGS].items():
+                for username, override in config[self.OVERRIDES].items():
                     if username == user.username and int(override):
                         num += 1
         return num

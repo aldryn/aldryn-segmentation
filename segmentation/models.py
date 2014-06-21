@@ -6,9 +6,9 @@ import types
 
 from django.db import models
 from django.utils import six
-from django.utils.encoding import python_2_unicode_compatible
+from django.utils.encoding import python_2_unicode_compatible, force_text
 from django.utils.functional import lazy
-from django.utils.translation import ugettext, ugettext_lazy as _, string_concat
+from django.utils.translation import ugettext_lazy as _, string_concat
 
 from cms.models import CMSPlugin
 
@@ -38,7 +38,7 @@ class SegmentLimitPluginModel(CMSPlugin):
     max_children = models.PositiveIntegerField(_('# of matches to display'),
         blank=False,
         default=1,
-        help_text=ugettext('Display up to how many matching segments?'),
+        help_text=_('Display up to how many matching segments?'),
     )
 
     @property
@@ -58,12 +58,14 @@ class SegmentLimitPluginModel(CMSPlugin):
         '''
 
         if self.label:
-            return _('%(label)s [%(config)s]') % {
+            conf_str = _('%(label)s [%(config)s]') % {
                 'label': self.label,
                 'config': self.configuration_string,
             }
         else:
-            return self.configuration_string
+            conf_str = self.configuration_string
+
+        return force_text(conf_str)
 
 
 @python_2_unicode_compatible
@@ -145,6 +147,7 @@ class SegmentBasePluginModel(CMSPlugin):
 
         conf = self.configuration_string
 
+        # TODO: This should no longer be necessary.
         if isinstance(conf, types.FunctionType):
             conf_str = conf()
         else:
@@ -156,7 +159,7 @@ class SegmentBasePluginModel(CMSPlugin):
                 'config': conf_str,
             }
         else:
-            return conf_str
+            return force_text(conf_str)
 
 
 class FallbackSegmentPluginModel(SegmentBasePluginModel):
@@ -530,8 +533,6 @@ class CountrySegmentPluginModel(SegmentBasePluginModel):
 
 
 class AuthenticatedSegmentPluginModel(SegmentBasePluginModel):
-
-    dummy = models.CharField(max_length=10, blank=True)
 
     @property
     def configuration_string(self):

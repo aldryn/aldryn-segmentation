@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from cms.plugin_pool import plugin_pool
 
-from ..cms_plugins import SegmentPluginBase
+from .segment_plugin_base import SegmentPluginBase
 
 from ..models import (
     AuthenticatedSegmentPluginModel,
