@@ -31,7 +31,7 @@ setup(
     package_data={
         "segmentation": [
             "locale/*/LC_MESSAGES/*",
-            "templates/*/segmentation/*",
+            "templates/segmentation/*",
         ],
     },
     license='LICENSE.txt',
