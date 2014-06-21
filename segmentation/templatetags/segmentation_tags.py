@@ -4,17 +4,18 @@ from __future__ import unicode_literals
 
 from django import template
 
-from classytags.helpers import InclusionTag
 from classytags.core import Options
 from classytags.arguments import Argument
 
+from cms.templatetags.cms_tags import RenderPlugin
+
 from ..segment_pool import SegmentOverride
+
 
 register = template.Library()
 
 
-class RenderSegmentPlugin(InclusionTag):
-    template = 'cms/content.html'
+class RenderSegmentPlugin(RenderPlugin):
     name = 'render_segment_plugin'
     options = Options(
         Argument('plugin'),
@@ -22,15 +23,13 @@ class RenderSegmentPlugin(InclusionTag):
     )
 
     def is_renderable(self, context, plugin_instance):
-        #
-        # TODO: This code is remarkably similar to a block in
-        # ..cms_plugins.segment_limiter. Consider moving it into the
-        # SegmentPluginBase class and accessing it from the two blocks here and
-        # in the limiter.
-        #
-        child_plugin = plugin_instance.get_plugin_class_instance()
+        '''
+        Determines whether this plugin is to be rendered in this context.
+        '''
 
-        if hasattr(child_plugin, 'is_context_appropriate'):
+        child_plugin = plugin_instance.get_plugin_class_instance()
+        if (hasattr(child_plugin, 'allow_overrides') and
+                hasattr(child_plugin, 'is_context_appropriate')):
             #
             # This is a segment plugin... or at least quacks like one.
             #
@@ -41,7 +40,6 @@ class RenderSegmentPlugin(InclusionTag):
                 
                 if override == SegmentOverride.ForcedActive:
                     return True
-                
                 elif override == SegmentOverride.ForcedInactive:
                     return False
 
@@ -53,33 +51,6 @@ class RenderSegmentPlugin(InclusionTag):
         # This doesn't quack like a SegmentPlugin, so, it always renders.
         #
         return True
-
-
-    def get_processors(self, context, plugin):
-        #
-        # NOTE: This code should be more or less identical to that of
-        # cms.templatetags.cms_tags.RenderPlugin(). Once this application gets
-        # to a steady state, consider a PR to django CMS to pull this code into
-        # it's own get_processors() method, then this tag will be able to just
-        # subclass RenderPlugin.
-        # --------------------------------------------------------------------
-        edit = False
-        request = context['request']
-        toolbar = getattr(request, 'toolbar', None)
-        page = request.current_page
-        if toolbar and toolbar.edit_mode and (not page or page.has_change_permission(request)):
-            edit = True
-        if edit:
-            from cms.middleware.toolbar import toolbar_plugin_processor
-
-            processors = (toolbar_plugin_processor,)
-        else:
-            processors = None
-        # --------------------------------------------------------------------
-        # End of duplicate code
-        #
-
-        return processors
 
 
     def get_context(self, context, plugin, render_plugin):
@@ -97,7 +68,7 @@ class RenderSegmentPlugin(InclusionTag):
             # OK, this is a Segmentation Plugin that is NOT appropriate for
             # rendering in the current context. Unfortunately, we need to
             # render the plugin, but throw away the results in order to allow
-            # the structureboard to display properly. Ugly!
+            # the structureboard to display properly. Ugh!
             #
             plugin_instance.render_plugin(context, processors=processors)
             return {'content': ''}
