@@ -66,7 +66,7 @@ if you like. Here's how to get started quickly:
 NOTE: At this time, the project has only been tested under:
 - Python 2.7
 - Django 1.6
-- django CMS 3.0.2
+- django CMS 3.0.2 (5e20187623660cc76b318cc586f55c714c041888 or later)
 
 1. Make sure you're using a version of django-CMS that is later than
    3.0.2.dev1, otherwise the Segment menu will not appear correctly and likely
