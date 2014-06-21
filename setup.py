@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 from segmentation import __version__
 
 REQUIREMENTS = [
-    'django-cms>3.0.2'
+    # 'django-cms>=3.0.2'
 ]
 
 CLASSIFIERS = [
@@ -31,6 +31,7 @@ setup(
     package_data={
         "segmentation": [
             "locale/*/LC_MESSAGES/*",
+            "templates/*/segmentation/*",
         ],
     },
     license='LICENSE.txt',
