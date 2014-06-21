@@ -72,7 +72,7 @@ At this time, the package is not submitted to PyPi, but you can still use pip
 if you like. Here's how to get started quickly:
 
 NOTE: At this time, the project has only been tested under:
-- Python 2.7
+- Python 2.6, 2.7, 3.3, 3.4
 - Django 1.6
 - django CMS 3.0.2 (5e20187623660cc76b318cc586f55c714c041888 or later)
 
