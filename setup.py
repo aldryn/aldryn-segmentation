@@ -4,6 +4,7 @@ from setuptools import setup, find_packages
 from segmentation import __version__
 
 REQUIREMENTS = [
+    'django-cms>3.0.2'
 ]
 
 CLASSIFIERS = [

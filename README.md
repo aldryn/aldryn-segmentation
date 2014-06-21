@@ -64,12 +64,13 @@ At this time, the package is not submitted to PyPi, but you can still use pip
 if you like. Here's how to get started quickly:
 
 NOTE: At this time, the project has only been tested under:
-- Python 2.7,
-- Django 1.6,
-- django CMS 3.0.2.
+- Python 2.7
+- Django 1.6
+- django CMS 3.0.2
 
 1. Make sure you're using a version of django-CMS that is later than
-   3.0.2.dev1, otherwise the Segment menu will not appear correctly.
+   3.0.2.dev1, otherwise the Segment menu will not appear correctly and likely
+   the whole toolbar won't render at all.
 1. pip install https://github.com/aldryn/aldryn-segmentation/archive/master.zip
 1. Add 'segmentation' to INSTALLED_APPS in your Django project's settings file
 1. python manage.py schemamigration segmentation --initial
