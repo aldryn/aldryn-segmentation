@@ -1,0 +1,34 @@
+Django==1.6.5
+Pillow==2.4.0
+South==0.8.4
+# This isn't yet installable via PyPI, but you can install it from the GitHub
+# repo. `pip install https://github.com/aldryn/aldryn-segmentation/archive/master.zip`
+aldryn-segmentation==0.2.0
+argparse==1.2.1
+dj-database-url==0.3.0
+django-classy-tags==0.5.1
+# django CMS: needs to be >= 3.0.3 or a very recent develop, the following is
+# the minimum commit required.
+-e git+https://github.com/divio/django-cms@5e20187623660cc76b318cc586f55c714c041888#egg=django_cms-origin/develop
+django-mptt==0.6.1
+django-reversion==1.8.0
+django-sekizai==0.7
+djangocms-admin-style==0.2.2
+djangocms-column==1.3
+djangocms-file==0.0.1
+djangocms-flash==0.0.2
+djangocms-googlemap==0.0.5
+djangocms-inherit==0.0.1
+djangocms-installer==0.5.2
+djangocms-link==1.3.4
+djangocms-picture==0.0.2
+djangocms-style==1.3
+djangocms-teaser==0.0.1
+djangocms-text-ckeditor==2.1.6
+djangocms-video==0.0.1
+html5lib==0.999
+pytz==2014.4
+# `pyuca` is not a strict requirement, but is strongly recommended if operators
+# will use non-EN languages in the CMS on Python 3.0+.
+pyuca==1.0
+six==1.7.2
