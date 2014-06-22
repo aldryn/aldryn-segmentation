@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 import sys
+import warnings
 
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
@@ -17,9 +18,6 @@ from cms.toolbar.items import SubMenu, Break, AjaxItem
 
 from ..cms_plugins import SegmentPluginBase
 from ..models import SegmentBasePluginModel
-
-import logging
-logger = logging.getLogger(__name__)
 
 
 #
@@ -163,8 +161,8 @@ class SegmentPool(object):
                 elif isinstance(plugin_config, six.text_type):
                     plugin_config_key = plugin_config
                 else:
-                    logger.warn('register_segment: Not really sure what '
-                                'configuration_string returned!')
+                    warnings.warn('register_segment: Not really sure what '
+                                '‘plugin_instance.configuration_string’ returned!')
 
                 activate(lang)
 
@@ -185,12 +183,17 @@ class SegmentPool(object):
                     segment[self.INSTANCES].append( plugin_instance )
                     self._sorted_segments = dict()
                 else:
-                    raise PluginAlreadyRegistered('The segment plugin (%s) cannot '
-                        'be registered because it already is.' % plugin_instance)
+                    cls = plugin_instance.get_plugin_class_instance().__class__.__name__
+                    raise PluginAlreadyRegistered('The segment plugin {0} cannot '
+                        'be registered because it already is.'.format(cls))
 
         else:
-            raise ImproperlyConfigured('Segment Plugins must subclasses of '
-                'SegmentBasePluginModel. %s is not.' % plugin_instance)
+            try:
+                cls = plugin_instance.get_plugin_class_instance().__class__.__name__
+                raise ImproperlyConfigured('Segment Plugins must subclasses of '
+                    'SegmentBasePluginModel. {0!r} is not.'.format(cls))
+            except:
+                raise ImproperlyConfigured()
 
 
     def unregister_segment_plugin(self, plugin_instance):
@@ -206,7 +209,9 @@ class SegmentPool(object):
 
         if not isinstance(plugin_instance, SegmentBasePluginModel):
             raise ImproperlyConfigured('Segment Plugins must subclasses of '
-                'SegmentBasePluginModel. %s is not.' % plugin_instance)
+                'SegmentBasePluginModel. {0} is not.'.format(
+                    plugin_instance.get_plugin_class_instance().__class__.__name__
+                ))
         else:
             plugin_class_instance = plugin_instance.get_plugin_class_instance()
             if plugin_class_instance.allow_overrides:
@@ -235,9 +240,13 @@ class SegmentPool(object):
                                     del self.segments[plugin_class_name]
             return
 
-        raise PluginNotRegistered('The segment plugin (%s) cannot be '
-            'unregistered because it is not currently registered in the '
-            'SegmentPool. (#1)' % plugin_instance)
+        try:
+            cls = plugin_instance.get_plugin_class_instance().__class__.__name__
+            raise PluginNotRegistered('The segment plugin {0} cannot be '
+                'unregistered because it is not currently registered in the '
+                'SegmentPool.'.format(cls))
+        except:
+            raise PluginNotRegistered()
 
 
     def set_override(self, user, segment_class, segment_config, override):
@@ -315,13 +324,14 @@ class SegmentPool(object):
         except KeyError:
             if not isinstance(segment_config, Promise):
                 import inspect
-                # TODO: This should be stronger than a log. (warning or exception?)
-                logger.error(u'get_override_for_segment received '
-                    'segment_config: “%s” as type %s from: %s. This has '
-                    'resulted in a failure to retrieve a segment override.' % (
+                warnings.warn('get_override_for_segment() received '
+                    'segment_config: “{0}” as type {1} from: {2!r}. '
+                    'This has resulted in a failure to retrieve a '
+                    'segment override.'.format(
                         segment_config,
                         type(segment_config),
-                        inspect.stack()[1][3])
+                        inspect.stack()[1][3]
+                    )
                 )
 
         return SegmentOverride.NoOverride
@@ -456,7 +466,11 @@ class SegmentPool(object):
 
         num_overrides = self.get_num_overrides_for_user(user)
 
-        segment_menu_name = _('Segments (%s)' % num_overrides) if num_overrides else _('Segments')
+        if num_overrides:
+            segment_menu_name = _('Segments ({num:d})'.format(num=num_overrides))
+        else:
+            segment_menu_name = _('Segments')
+
         segment_menu = toolbar.get_or_create_menu(
             'segmentation-menu',
             segment_menu_name
@@ -514,6 +528,7 @@ class SegmentPool(object):
         segment_menu.add_item(Break())
         reset_ajax_item = AjaxItem(
             _('Reset all segments'),
+            # TODO: This should not use a named pattern
             action=reverse('admin:reset_all_segment_overrides'),
             csrf_token=csrf_token,
             data={},
