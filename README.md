@@ -32,7 +32,8 @@ Development Status
 ### Tests:
 
 Actually, not really sure how to set-up testing for an app that one adds to
-django CMS. All of the following have been performed manually, however.
+django CMS. All of the following have been performed manually via the included
+test_project, however.
 
 - [x] Segment logic tests
 - [x] Segment Pool tests
@@ -62,9 +63,13 @@ Known Issues
 This is a list of known issues that are being worked on...
 
 - [ ] Only a partial, French translation is available, supplied by
-      translate.google.com.
+      translate.google.com. (Mostly the rest of the country names is all that
+      remains.)
 
-- [ ] Does not seem to work with the new Alias Plugin... investigating.
+- [x] Does not seem to work with the new Alias Plugin...
+      Actually, its just that the AliasPlugin didn't work in Django 1.4.13.
+      I've submitted a PR to fix this and added tests to help detect and
+      prevent future issues.
 
 
 Installation
@@ -76,7 +81,7 @@ if you like. Here's how to get started quickly:
 NOTE: At this time, the project has only been tested under:
 - Python 2.6, 2.7, 3.3, 3.4
 - Django 1.5, 1.6
-- django CMS 3.0.2 (5e20187623660cc76b318cc586f55c714c041888 or later)
+- django CMS 3.0.2 (276fd37b0e49555bafce6c071ca50508de5e4c49 or later)
 
 1. Make sure you're using a version of django-CMS that is later than
    3.0.2.dev1, otherwise the Segment menu will not appear correctly and likely

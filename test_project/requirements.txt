@@ -5,7 +5,7 @@ South==0.8.4
 # This isn't yet installable via PyPI, but you can install it from the GitHub
 # repo: `pip install https://github.com/aldryn/aldryn-segmentation/archive/master.zip`
 #
-aldryn-segmentation==0.3.0
+aldryn-segmentation==0.4.0
 argparse==1.2.1
 dj-database-url==0.3.0
 django-classy-tags==0.5.1
@@ -13,7 +13,7 @@ django-classy-tags==0.5.1
 # django CMS: needs to be >= 3.0.3 or a very recent develop, the following is
 # the minimum commit required.
 #
--e git+https://github.com/divio/django-cms@5e20187623660cc76b318cc586f55c714c041888#egg=django_cms-origin/develop
+-e git+https://github.com/divio/django-cms@276fd37b0e49555bafce6c071ca50508de5e4c49#egg=django_cms-origin/develop
 django-mptt==0.6.1
 django-reversion==1.8.0
 django-sekizai==0.7
