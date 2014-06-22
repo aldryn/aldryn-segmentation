@@ -64,6 +64,8 @@ This is a list of known issues that are being worked on...
 - [ ] Only a partial, French translation is available, supplied by
       translate.google.com.
 
+- [ ] Does not seem to work with the new Alias Plugin... investigating.
+
 
 Installation
 ------------
