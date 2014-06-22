@@ -37,7 +37,7 @@ django CMS. All of the following have been performed manually, however.
 - [x] Segment logic tests
 - [x] Segment Pool tests
 - [x] I18N tests
-- [-] Multiple operator tests
+- [x] Multiple operator tests
 
 ### Documentation:
 - [ ] Operator's guide
@@ -50,7 +50,7 @@ django CMS. All of the following have been performed manually, however.
       - [x] Python 2.7.x
       - [x] Python 3.3.x
       - [x] Python 3.4.x
-- [ ] Ensure compatibility with supported Djangos (vs. Python 2.7)
+- [x] Ensure compatibility with supported Djangos (vs. Python 2.7)
       - [x] Django 1.4.x
       - [x] Django 1.5.x
       - [x] Django 1.6.x
