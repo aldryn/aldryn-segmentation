@@ -6,8 +6,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from cms.plugin_base import CMSPluginBase
 
-import logging
-logger = logging.getLogger(__name__)
 
 class SegmentPluginBase(CMSPluginBase):
     '''
