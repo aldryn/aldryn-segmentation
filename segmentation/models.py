@@ -2,8 +2,6 @@
 
 from __future__ import unicode_literals
 
-import types
-
 from django.db import models
 from django.utils import six
 from django.utils.encoding import python_2_unicode_compatible, force_text
@@ -58,10 +56,10 @@ class SegmentLimitPluginModel(CMSPlugin):
         '''
 
         if self.label:
-            conf_str = _('%(label)s [%(config)s]') % {
-                'label': self.label,
-                'config': self.configuration_string,
-            }
+            conf_str = _('{label} [{config}]').format(
+                label=self.label,
+                config=force_text(self.configuration_string),
+            )
         else:
             conf_str = self.configuration_string
 
@@ -145,21 +143,15 @@ class SegmentBasePluginModel(CMSPlugin):
         otherwise, just return the configuration string.
         '''
 
-        conf = self.configuration_string
-
-        # TODO: This should no longer be necessary.
-        if isinstance(conf, types.FunctionType):
-            conf_str = conf()
-        else:
-            conf_str = conf
-
         if self.label:
-            return _('%(label)s [%(config)s]') % {
-                'label': self.label,
-                'config': conf_str,
-            }
+            conf_str = _('{label} [{config}]').format(
+                label=self.label,
+                config=force_text(self.configuration_string),
+            )
         else:
-            return force_text(conf_str)
+            conf_str = self.configuration_string
+
+        return force_text(conf_str)
 
 
 class FallbackSegmentPluginModel(SegmentBasePluginModel):
@@ -506,9 +498,9 @@ class CountrySegmentPluginModel(SegmentBasePluginModel):
     # We prepend the country code to the country name string for the field
     # choices.
     #
-    COUNTRY_CODES_CHOICES = [ (code, _('%(code)s: %(name)s') % {
-        'code': code, 'name': name
-    }) for (code, name) in COUNTRY_CODES ]
+    COUNTRY_CODES_CHOICES = [ (code, _('{code}: {name}').format(
+            code=code, name=name
+        )) for (code, name) in COUNTRY_CODES ]
 
     # This is so we can perform look-ups too.
     country_code_names = dict(COUNTRY_CODES)
