@@ -2,6 +2,8 @@
 
 from __future__ import unicode_literals
 
+import sys
+
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.utils import six
@@ -183,12 +185,12 @@ class SegmentPool(object):
                     segment[self.INSTANCES].append( plugin_instance )
                     self._sorted_segments = dict()
                 else:
-                    raise PluginAlreadyRegistered('The segment plugin (%r) cannot '
+                    raise PluginAlreadyRegistered('The segment plugin (%s) cannot '
                         'be registered because it already is.' % plugin_instance)
 
         else:
             raise ImproperlyConfigured('Segment Plugins must subclasses of '
-                'SegmentBasePluginModel. %r is not.' % plugin_instance)
+                'SegmentBasePluginModel. %s is not.' % plugin_instance)
 
 
     def unregister_segment_plugin(self, plugin_instance):
@@ -204,7 +206,7 @@ class SegmentPool(object):
 
         if not isinstance(plugin_instance, SegmentBasePluginModel):
             raise ImproperlyConfigured('Segment Plugins must subclasses of '
-                'SegmentBasePluginModel. %r is not.' % plugin_instance)
+                'SegmentBasePluginModel. %s is not.' % plugin_instance)
         else:
             plugin_class_instance = plugin_instance.get_plugin_class_instance()
             if plugin_class_instance.allow_overrides:
@@ -233,7 +235,7 @@ class SegmentPool(object):
                                     del self.segments[plugin_class_name]
             return
 
-        raise PluginNotRegistered('The segment plugin (%r) cannot be '
+        raise PluginNotRegistered('The segment plugin (%s) cannot be '
             'unregistered because it is not currently registered in the '
             'SegmentPool. (#1)' % plugin_instance)
 
@@ -345,7 +347,7 @@ class SegmentPool(object):
         return SegmentOverride.NoOverride
 
 
-    def get_registered_segments(self):
+    def _get_sorted_copy(self):
         '''
         Returns the SegmentPool as a list of tuples sorted appropriately for
         human consumption in *the current language*. This means that the
@@ -376,31 +378,71 @@ class SegmentPool(object):
                 ]
             })
         ]
+
+        NOTE: On Python 3.0+ systems, we depend on pyuca for collation, which
+        produces excellent results. On earlier systems, this is not available,
+        so, we use a cruder mapping of accented characters into their
+        unaccented ASCII equivalents.
         '''
 
-        from copy import deepcopy
+        sort_key = None
+        if sys.version_info >= (3, 0):
+            uca = None
+            #
+            # Unfortunately, the pyuca class–which can provide collation of
+            # strings in a thread-safe manner–is for Python 3.0+ only
+            #
+            try:
+                from pyuca import Collator
+                uca = Collator()
+                sort_key = uca.sort_key
+            except:
+                pass                
 
+        if not sort_key:
+            #
+            # Our fallback position is to use a more simple approach of
+            # mapping 'accented' chars to latin equivalents before sorting,
+            # this is crude, but better than nothing.
+            #
+            from .unaccent import unaccented_map
+
+            def sort_key(s):
+                return s.translate(unaccented_map())
+
+        pool = self.segments
+        clone = []
+        for cls_key in sorted(pool.keys()):
+            cls_dict = {
+                self.NAME: pool[cls_key][self.NAME],
+                self.CFGS: list(),
+            }
+            clone.append(( cls_key, cls_dict ))
+            # We'll build the CFG as a list in arbitrary order for now...
+            for cfg_key in pool[cls_key][self.CFGS]:
+                cfg_dict = {
+                    self.LABEL: pool[cls_key][self.CFGS][cfg_key][self.LABEL],
+                    self.OVERRIDES: dict(),
+                    self.INSTANCES: list(),
+                }
+                for username, override in pool[cls_key][self.CFGS][cfg_key][self.OVERRIDES].items():
+                    cfg_dict[self.OVERRIDES][username] = override
+                for instance in pool[cls_key][self.CFGS][cfg_key][self.INSTANCES]:
+                    cfg_dict[self.INSTANCES].append(instance)
+                cls_dict[self.CFGS].append( (cfg_key, cfg_dict) )
+            #
+            # Now, sort the CFGS by their LABEL, using which every means we
+            # have available to us at this moment.
+            #
+            cls_dict[self.CFGS] = sorted(cls_dict[self.CFGS], key=lambda x: sort_key(force_text(x[1][self.LABEL])))
+
+        return clone
+
+
+    def get_registered_segments(self):
         lang = get_language()
         if not lang in self._sorted_segments:
-            #
-            # Sort the outer dict in the current language, convering it to a
-            # list of tuples. Note, we're taking starting from a deep copy of
-            # the original pool dict to prevent affecting it.
-            #
-            self._sorted_segments[lang] = sorted(
-                deepcopy(self.segments).items(),
-                key=lambda x: x[1][self.NAME].encode('utf-8')
-            )
-
-            #
-            # Sort each of the inner dicts in the current language, converting
-            # them to lists of tuples too.
-            #
-            for _, segment_class in self._sorted_segments[lang]:
-                segment_class[self.CFGS] = sorted(
-                    segment_class[self.CFGS].items(),
-                    key=lambda x: force_text(x[1][self.LABEL])
-                )
+            self._sorted_segments[lang] = self._get_sorted_copy()
 
         return self._sorted_segments[lang]
 

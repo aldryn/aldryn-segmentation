@@ -32,12 +32,12 @@ Development Status
 ### Tests:
 
 Actually, not really sure how to set-up testing for an app that one adds to
-django CMS.
+django CMS. All of the following have been performed manually, however.
 
-- [ ] Segment logic tests
-- [ ] Segment Pool tests
-- [ ] I18N tests
-- [ ] Multiple operator tests
+- [x] Segment logic tests
+- [x] Segment Pool tests
+- [x] I18N tests
+- [-] Multiple operator tests
 
 ### Documentation:
 - [ ] Operator's guide
@@ -51,8 +51,8 @@ django CMS.
       - [x] Python 3.3.x
       - [x] Python 3.4.x
 - [ ] Ensure compatibility with supported Djangos (vs. Python 2.7)
-      - [ ] Django 1.4.x
-      - [ ] Django 1.5.x - Issue with copy.deepcopy()
+      - [x] Django 1.4.x
+      - [x] Django 1.5.x
       - [x] Django 1.6.x
 
 
@@ -73,16 +73,18 @@ if you like. Here's how to get started quickly:
 
 NOTE: At this time, the project has only been tested under:
 - Python 2.6, 2.7, 3.3, 3.4
-- Django 1.6
+- Django 1.5, 1.6
 - django CMS 3.0.2 (5e20187623660cc76b318cc586f55c714c041888 or later)
 
 1. Make sure you're using a version of django-CMS that is later than
    3.0.2.dev1, otherwise the Segment menu will not appear correctly and likely
    the whole toolbar won't render at all.
-1. pip install https://github.com/aldryn/aldryn-segmentation/archive/master.zip
+1. If you're using Python 3, it is recommended also install:
+   `pip intall pyuca` for better collation of non-EN languages.
+1. `pip install https://github.com/aldryn/aldryn-segmentation/archive/master.zip`
 1. Add 'segmentation' to INSTALLED_APPS in your Django project's settings file
-1. python manage.py schemamigration segmentation --initial
-1. python manage.py migrate segmentation
+1. `python manage.py schemamigration segmentation --initial`
+1. `python manage.py migrate segmentation`
 
 At this point you should be good to go. When you next run your project, the
 first thing you may notice is that you have new–albeit empty–'Segments' menu
