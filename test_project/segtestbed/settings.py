@@ -11,8 +11,11 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+from unipath import Path
+PROJECT_ROOT = Path(__file__).ancestor(2)
+PROJECT_PATH = Path(__file__).ancestor(1)
 
 
 # Quick-start development settings - unsuitable for production
@@ -80,6 +83,7 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'country_segment.middleware.resolve_country_code_middleware.ResolveCountryCodeMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -140,6 +144,7 @@ INSTALLED_APPS = (
     'reversion',
     'segtestbed',
     'segmentation',
+    'country_segment',
 )
 
 LANGUAGES = (
@@ -188,3 +193,41 @@ DATABASES = {
     'default':
         {'ENGINE': 'django.db.backends.sqlite3', 'NAME': 'project.db', 'HOST': 'localhost', 'USER': '', 'PASSWORD': '', 'PORT': ''}
 }
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            'format': '%(asctime)s %(levelname)-8s %(name)s %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        }
+    },
+    'loggers': {
+        # 'django.request': {
+        #     'handlers': ['mail_admins'],
+        #     'level': 'ERROR',
+        #     'propagate': True,
+        # },
+        'segmentation': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
+#
+# GEOIP SETTINGS
+#
+GEOIP_PATH = str('%s%s' % (PROJECT_ROOT, '/GeoIP.dat', ))

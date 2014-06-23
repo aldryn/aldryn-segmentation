@@ -124,10 +124,6 @@ class SegmentPool(object):
         2. A lazy translation object (Promise)
         '''
 
-
-        #
-        # TODO: Consider looking for ducks instead of instances.
-        #
         if isinstance(plugin_instance, SegmentBasePluginModel):
             plugin_class_instance = plugin_instance.get_plugin_class_instance()
 

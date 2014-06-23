@@ -4,7 +4,8 @@ from setuptools import setup, find_packages
 from segmentation import __version__
 
 REQUIREMENTS = [
-    # 'django-cms>=3.0.2'
+    # 'django-cms>=3.0.3'
+    # 'aldryn-country-segment>=0.1.0'
 ]
 
 CLASSIFIERS = [

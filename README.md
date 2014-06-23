@@ -80,7 +80,7 @@ if you like. Here's how to get started quickly:
 
 NOTE: At this time, the project has only been tested under:
 - Python 2.6, 2.7, 3.3, 3.4
-- Django 1.5, 1.6
+- Django 1.4, 1.5, 1.6
 - django CMS 3.0.2 (276fd37b0e49555bafce6c071ca50508de5e4c49 or later)
 
 1. Make sure you're using a version of django-CMS that is later than

@@ -12,7 +12,6 @@ from ..models import (
     CookieSegmentPluginModel,
     FallbackSegmentPluginModel,
     SwitchSegmentPluginModel,
-    CountrySegmentPluginModel,
 )
 
 
@@ -70,38 +69,11 @@ class CookieSegmentPlugin(SegmentPluginBase):
 plugin_pool.register_plugin(CookieSegmentPlugin)
 
 
-class CountrySegmentPlugin(SegmentPluginBase):
-    '''
-    This plugin allows segmentation based on the visitor's IP addresses
-    associated country code. Use of this segment requires the use of the
-    'resolve_country_code_middleware' provided in this distribution. This
-    middleware, in turn, depends on django.contrib.geo_ip and MaxMind's
-    GeoLite dataset or similar.
-    '''
-
-    #
-    # TODO: Move this and related bits to another repo
-    #
-
-    model = CountrySegmentPluginModel
-    name = _('Segment by country')
-
-    def is_context_appropriate(self, context, instance):
-        code = context.get('COUNTRY_CODE')
-        return (code == instance.country_code)
-
-plugin_pool.register_plugin(CountrySegmentPlugin)
-
-
 class AuthenticatedSegmentPlugin(SegmentPluginBase):
     '''
     This plugin allows segmentation based on the authentication/authorization
     status of the visitor.
     '''
-
-    #
-    # TODO: Move this and related bits to another repo
-    #
 
     model = AuthenticatedSegmentPluginModel
     name = _('Segment by auth')
