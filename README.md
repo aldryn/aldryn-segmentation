@@ -45,7 +45,7 @@ test_project, however.
 - [ ] Developer's guide
 
 ### Other:
-- [ ] Move the Country Segment and its related bits to another repo?
+- [x] Move the Country Segment and its related bits to another repo?
 - [x] Ensure compatibility with supported Pythons (vs. Django 1.6)
 	  - [x] Python 2.6.x
       - [x] Python 2.7.x
@@ -92,6 +92,14 @@ NOTE: At this time, the project has only been tested under:
 1. Add 'segmentation' to INSTALLED_APPS in your Django project's settings file
 1. `python manage.py schemamigration segmentation --initial`
 1. `python manage.py migrate segmentation`
+
+Optional, but required if you intend to run the test project included in the
+repo:
+
+1. `pip install aldryn-country-segment` (not actually in PyPI just yet), so,
+   you'll need to: `pip install https://github.com/aldryn/aldryn-country-segment/archive/master.zip`
+   for now.
+1. Follow the instructions provided in the README for Aldryn Country Segment.
 
 At this point you should be good to go. When you next run your project, the
 first thing you may notice is that you have new–albeit empty–'Segments' menu
