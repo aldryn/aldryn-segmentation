@@ -100,8 +100,6 @@ class SegmentPool(object):
         register them.
         '''
 
-        suppress_discovery = self.segments == dict()
-
         for plugin_class in plugin_pool.get_all_plugins():
             #
             # NOTE: We're not looking for ducks here. Should we be?
@@ -109,7 +107,10 @@ class SegmentPool(object):
             if (issubclass(plugin_class, SegmentPluginBase) and
                     plugin_class.allow_overrides):
                 for plugin_instance in plugin_class.model.objects.all():
-                    self.register_segment_plugin(plugin_instance, suppress_discovery)
+                    self.register_segment_plugin(
+                        plugin_instance,
+                        suppress_discovery=(not self.segments)
+                    )
 
 
     def register_segment_plugin(self, plugin_instance, suppress_discovery=False):
@@ -123,9 +124,12 @@ class SegmentPool(object):
 
         1. A number string of text
         2. A lazy translation object (Promise)
+
+        the `suppress_discovery` flag, when set to true, prevents recursion
+        and should be only used by the self.discovery() method.
         '''
 
-        if not suppress_discovery and self.segments == dict():
+        if not suppress_discovery and not self.segments:
             self.discover()
 
         if isinstance(plugin_instance, SegmentBasePluginModel):
@@ -207,7 +211,7 @@ class SegmentPool(object):
         # for the plugin in all CFGS for this plugin's class.
         #
 
-        if self.segments == dict():
+        if not self.segments:
             self.discover()
 
         if not isinstance(plugin_instance, SegmentBasePluginModel):
@@ -257,7 +261,7 @@ class SegmentPool(object):
         (Re-)Set an override on a segment (segment_class x segment_config).
         '''
 
-        if self.segments == dict():
+        if not self.segments:
             self.discover()
 
         overrides = self.segments[segment_class][self.CFGS][segment_config][self.OVERRIDES]
@@ -273,7 +277,7 @@ class SegmentPool(object):
         Resets (disables) the overrides for all segments.
         '''
 
-        if self.segments == dict():
+        if not self.segments:
             self.discover()
 
         for segment_class in self.segments.values():
@@ -291,7 +295,7 @@ class SegmentPool(object):
         of active overrides.
         '''
 
-        if self.segments == dict():
+        if not self.segments:
             self.discover()
 
         num = 0
@@ -316,7 +320,7 @@ class SegmentPool(object):
         # 2. A lazy translation object (Promise)
         #
 
-        if self.segments == dict():
+        if not self.segments:
             self.discover()
 
         lang = get_language()
@@ -360,7 +364,7 @@ class SegmentPool(object):
         an external entry-point into the segment_pool.
         '''
 
-        if self.segments == dict():
+        if not self.segments:
             self.discover()
 
         if (hasattr(plugin_class_instance, 'allow_overrides') and
@@ -473,7 +477,7 @@ class SegmentPool(object):
         sorted for the current language.
         '''
 
-        if self.segments == dict():
+        if not self.segments:
             self.discover()
 
         lang = get_language()
@@ -488,7 +492,10 @@ class SegmentPool(object):
         Returns a CMSToolbar "Segments" menu from the pool.
         '''
 
-        if self.segments == dict():
+        #
+        # NOTE: This is usually when the discovery process starts.
+        #
+        if not self.segments:
             self.discover()
 
         pool = self.get_registered_segments()
