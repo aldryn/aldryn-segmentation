@@ -92,14 +92,15 @@ class SegmentPool(object):
     def __init__(self):
         self.segments = dict()
         self._sorted_segments = dict()
-        self.discover()
 
 
     def discover(self):
         '''
         Find and register any SegmentPlugins already configured in the CMS and
-        register them...
+        register them.
         '''
+
+        suppress_discovery = self.segments == dict()
 
         for plugin_class in plugin_pool.get_all_plugins():
             #
@@ -108,10 +109,10 @@ class SegmentPool(object):
             if (issubclass(plugin_class, SegmentPluginBase) and
                     plugin_class.allow_overrides):
                 for plugin_instance in plugin_class.model.objects.all():
-                    self.register_segment_plugin(plugin_instance)
+                    self.register_segment_plugin(plugin_instance, suppress_discovery)
 
 
-    def register_segment_plugin(self, plugin_instance):
+    def register_segment_plugin(self, plugin_instance, suppress_discovery=False):
         '''
         Registers the provided plugin_instance into the SegmentPool.
         Raises:
@@ -123,6 +124,9 @@ class SegmentPool(object):
         1. A number string of text
         2. A lazy translation object (Promise)
         '''
+
+        if not suppress_discovery and self.segments == dict():
+            self.discover()
 
         if isinstance(plugin_instance, SegmentBasePluginModel):
             plugin_class_instance = plugin_instance.get_plugin_class_instance()
@@ -203,6 +207,9 @@ class SegmentPool(object):
         # for the plugin in all CFGS for this plugin's class.
         #
 
+        if self.segments == dict():
+            self.discover()
+
         if not isinstance(plugin_instance, SegmentBasePluginModel):
             raise ImproperlyConfigured('Segment Plugins must subclasses of '
                 'SegmentBasePluginModel. {0} is not.'.format(
@@ -250,6 +257,9 @@ class SegmentPool(object):
         (Re-)Set an override on a segment (segment_class x segment_config).
         '''
 
+        if self.segments == dict():
+            self.discover()
+
         overrides = self.segments[segment_class][self.CFGS][segment_config][self.OVERRIDES]
         if override == SegmentOverride.NoOverride:
             del overrides[user.username]
@@ -262,6 +272,9 @@ class SegmentPool(object):
         '''
         Resets (disables) the overrides for all segments.
         '''
+
+        if self.segments == dict():
+            self.discover()
 
         for segment_class in self.segments.values():
             for configuration in segment_class[self.CFGS].values():
@@ -277,6 +290,9 @@ class SegmentPool(object):
         given user. This is used for the toolbar menu where we show the number
         of active overrides.
         '''
+
+        if self.segments == dict():
+            self.discover()
 
         num = 0
         for segment_class_name, segment_class in self.segments.items():
@@ -299,6 +315,9 @@ class SegmentPool(object):
         # 1. A number string of text
         # 2. A lazy translation object (Promise)
         #
+
+        if self.segments == dict():
+            self.discover()
 
         lang = get_language()
         activate('en')
@@ -340,6 +359,9 @@ class SegmentPool(object):
         provides the appropriate duck-checking and is therefore more useful as
         an external entry-point into the segment_pool.
         '''
+
+        if self.segments == dict():
+            self.discover()
 
         if (hasattr(plugin_class_instance, 'allow_overrides') and
                 plugin_class_instance.allow_overrides and
@@ -446,6 +468,14 @@ class SegmentPool(object):
 
 
     def get_registered_segments(self):
+        '''
+        This is the interfact for obtaining a copy of the pool. It is returned
+        sorted for the current language.
+        '''
+
+        if self.segments == dict():
+            self.discover()
+
         lang = get_language()
         if not lang in self._sorted_segments:
             self._sorted_segments[lang] = self._get_sorted_copy()
@@ -457,6 +487,9 @@ class SegmentPool(object):
         '''
         Returns a CMSToolbar "Segments" menu from the pool.
         '''
+
+        if self.segments == dict():
+            self.discover()
 
         pool = self.get_registered_segments()
 
