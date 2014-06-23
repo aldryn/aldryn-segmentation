@@ -99,6 +99,8 @@ repo:
 1. `pip install aldryn-country-segment` (not actually in PyPI just yet), so,
    you'll need to: `pip install https://github.com/aldryn/aldryn-country-segment/archive/master.zip`
    for now.
+1. `pip install django-easy-select2` (if you opt not to do this, you must
+    remove `'easy_select2'` from settings.INSTALLED_APPS in the test_project)
 1. Follow the instructions provided in the README for Aldryn Country Segment.
 
 At this point you should be good to go. When you next run your project, the
