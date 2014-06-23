@@ -62,9 +62,9 @@ Known Issues
 
 This is a list of known issues that are being worked on...
 
-- [ ] Only a partial, French translation is available, supplied by
-      translate.google.com. (Mostly the rest of the country names is all that
-      remains.)
+- [ ] UI for the Limit plugin needs some work. Ideas?
+
+- [x] French translation is available (via by translate.google.com)
 
 - [x] Does not seem to work with the new Alias Plugin...
       Actually, its just that the AliasPlugin didn't work in Django 1.4.13.
