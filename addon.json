@@ -1,0 +1,16 @@
+{
+    "name": "Aldryn Segmentation",
+    "description": "Provides market segmentation to Aldryn!",
+    "url": "https://github.com/aldryn/aldryn-segmentation",
+    "package-name": "aldryn-segmentation",
+    "installed-apps": [
+        "segmentation"
+    ],
+    "author": {
+        "name": "Divio",
+        "url": "https://www.aldryn.com"
+    },
+    "license": {
+        "name": "BSD"
+    }
+}
