@@ -52,6 +52,27 @@ class RenderSegmentPlugin(RenderPlugin):
         #
         return True
 
+    #
+    # TODO: Once Aldryn gets updated to 3.0.3 or later, remove this block!
+    #
+    def get_processors(self, context, plugin):
+        #
+        # Prepend frontedit toolbar output if applicable. Moved to its own
+        # method to aide subclassing the whole RenderPlugin if required.
+        #
+        edit = False
+        request = context['request']
+        toolbar = getattr(request, 'toolbar', None)
+        page = request.current_page
+        if toolbar and toolbar.edit_mode and (not page or page.has_change_permission(request)):
+            edit = True
+        if edit:
+            from cms.middleware.toolbar import toolbar_plugin_processor
+            processors = (toolbar_plugin_processor,)
+        else:
+            processors = None
+        return processors
+
 
     def get_context(self, context, plugin, render_plugin):
 
