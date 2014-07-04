@@ -31,7 +31,7 @@ Development Status
 
 ### Tests:
 
-These tests were performed in a test project.
+These tests are performed in the test_project.
 
 - [x] Segment logic tests
 - [x] Segment Pool tests
