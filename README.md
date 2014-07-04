@@ -31,18 +31,12 @@ Development Status
 
 ### Tests:
 
-Actually, not really sure how to set-up testing for an app that one adds to
-django CMS. All of the following have been performed manually via the included
-test_project, however.
+These tests were performed in a test project.
 
 - [x] Segment logic tests
 - [x] Segment Pool tests
 - [x] I18N tests
 - [x] Multiple operator tests
-
-### Documentation:
-- [ ] Operator's guide
-- [ ] Developer's guide
 
 ### Other:
 - [x] Move the Country Segment and its related bits to another repo?
