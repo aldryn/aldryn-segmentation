@@ -73,7 +73,7 @@ class SegmentBasePluginModel(CMSPlugin):
     # Defines a common interface for segment plugins. Also note that plugin
     # model's subclassing this class will automatically be (un-)registered
     # (from)to the segment_pool via 'pre_delete' and 'post_save' signals. This
-    # is implemented in segmentation.segment_pool.
+    # is implemented in aldryn_segmentation.segment_pool.
     #
 
     class Meta:

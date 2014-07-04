@@ -89,9 +89,9 @@ NOTE: At this time, the project has only been tested under:
 1. If you're using Python 3, it is recommended also install:
    `pip intall pyuca` for better collation of non-EN languages.
 1. `pip install https://github.com/aldryn/aldryn-segmentation/archive/master.zip`
-1. Add 'segmentation' to INSTALLED_APPS in your Django project's settings file
-1. `python manage.py schemamigration segmentation --initial`
-1. `python manage.py migrate segmentation`
+1. Add 'aldryn_segmentation' to INSTALLED_APPS in your Django project's settings file
+1. `python manage.py schemamigration aldryn_segmentation --initial`
+1. `python manage.py migrate aldryn_segmentation`
 
 Optional, but required if you intend to run the test project included in the
 repo:

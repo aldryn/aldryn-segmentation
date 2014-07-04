@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup, find_packages
-from segmentation import __version__
+from aldryn_segmentation import __version__
 
 REQUIREMENTS = [
     # 'django-cms>=3.0.3'
@@ -30,9 +30,9 @@ setup(
     url='https://github.com/aldryn/aldryn-segmentation',
     packages=find_packages(),
     package_data={
-        "segmentation": [
+        "aldryn_segmentation": [
             "locale/*/LC_MESSAGES/*",
-            "templates/segmentation/*",
+            "templates/aldryn_segmentation/*",
         ],
     },
     license='LICENSE.txt',

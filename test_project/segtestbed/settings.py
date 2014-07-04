@@ -143,7 +143,7 @@ INSTALLED_APPS = (
     'djangocms_video',
     'reversion',
     'segtestbed',
-    'segmentation',
+    'aldryn_segmentation',
     'country_segment',
 )
 
@@ -219,7 +219,7 @@ LOGGING = {
         #     'level': 'ERROR',
         #     'propagate': True,
         # },
-        'segmentation': {
+        'aldryn_segmentation': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': True,

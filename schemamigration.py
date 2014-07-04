@@ -12,7 +12,7 @@ INSTALLED_APPS = [
     'cms',
     'menus',
     'south',
-    'segmentation',
+    'aldryn_segmentation',
 ]
 
 DATABASES = {
@@ -53,7 +53,7 @@ def schemamigration():
     )
     argv = list(sys.argv)
     argv.insert(1, 'schemamigration')
-    argv.insert(2, 'segmentation')
+    argv.insert(2, 'aldryn_segmentation')
     utility = ManagementUtility(argv)
     utility.execute()
 

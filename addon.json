@@ -4,7 +4,7 @@
     "url": "https://github.com/aldryn/aldryn-segmentation",
     "package-name": "aldryn-segmentation",
     "installed-apps": [
-        "segmentation"
+        "aldryn_segmentation"
     ],
     "author": {
         "name": "Divio",
