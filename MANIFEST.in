@@ -1,0 +1,5 @@
+include LICENSE.txt
+include README.md
+recursive-include aldryn_segmentation/locale *
+recursive-include aldryn_segmentation/templates *
+recursive-exclude * *.py[co]
