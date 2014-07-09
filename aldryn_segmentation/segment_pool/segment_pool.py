@@ -13,12 +13,16 @@ from django.utils.functional import Promise
 from django.utils.translation import activate, get_language, ugettext_lazy as _
 
 from cms.exceptions import PluginAlreadyRegistered, PluginNotRegistered
-from cms.plugin_pool import plugin_pool
+from cms.models import CMSPlugin
+# from cms.plugin_pool import plugin_pool
 from cms.toolbar.items import SubMenu, Break, AjaxItem
 
 from ..cms_plugins import SegmentPluginBase
 from ..models import SegmentBasePluginModel
 
+import logging
+logger = logging.getLogger(__name__)
+logger.info('Logging enabled.')
 
 #
 # A simple enum so we can use the same code in Python's < 3.4.
@@ -100,17 +104,16 @@ class SegmentPool(object):
         register them.
         '''
 
-        for plugin_class in plugin_pool.get_all_plugins():
-            #
-            # NOTE: We're not looking for ducks here. Should we be?
-            #
-            if (issubclass(plugin_class, SegmentPluginBase) and
-                    plugin_class.allow_overrides):
-                for plugin_instance in plugin_class.model.objects.all():
-                    self.register_segment_plugin(
-                        plugin_instance,
-                        suppress_discovery=(not self.segments)
-                    )
+        for plugin_instance in CMSPlugin.objects.all():
+            plugin_instance, plugin_class = plugin_instance.get_plugin_instance()
+
+            if (isinstance(plugin_class, SegmentPluginBase) and 
+                plugin_class.allow_overrides
+            ):
+                self.register_segment_plugin(
+                    plugin_instance,
+                    suppress_discovery=(not self.segments)
+                )
 
 
     def register_segment_plugin(self, plugin_instance, suppress_discovery=False):
@@ -122,8 +125,9 @@ class SegmentPool(object):
 
         Note: plugin_instance.configuration_string can return either of:
 
-        1. A number string of text
-        2. A lazy translation object (Promise)
+            1. A normal string of text,
+            2. A gettext_lazy object,
+            3. A extra-lazy object (Promise to return a gettext_lazy object)
 
         the `suppress_discovery` flag, when set to true, prevents recursion
         and should be only used by the self.discovery() method.
@@ -192,12 +196,9 @@ class SegmentPool(object):
                         'be registered because it already is.'.format(cls))
 
         else:
-            try:
-                cls = plugin_instance.get_plugin_class_instance().__class__.__name__
-                raise ImproperlyConfigured('Segment Plugins must subclasses of '
-                    'SegmentBasePluginModel. {0!r} is not.'.format(cls))
-            except:
-                raise ImproperlyConfigured()
+            cls = plugin_instance.__class__.__name__
+            raise ImproperlyConfigured('Segment Plugin models must '
+                'subclass SegmentBasePluginModel. {0!r} does not.'.format(cls))
 
 
     def unregister_segment_plugin(self, plugin_instance):
