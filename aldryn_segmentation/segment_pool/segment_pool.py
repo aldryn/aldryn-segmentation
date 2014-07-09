@@ -14,15 +14,12 @@ from django.utils.translation import activate, get_language, ugettext_lazy as _
 
 from cms.exceptions import PluginAlreadyRegistered, PluginNotRegistered
 from cms.models import CMSPlugin
-# from cms.plugin_pool import plugin_pool
+from cms.plugin_pool import plugin_pool
 from cms.toolbar.items import SubMenu, Break, AjaxItem
 
 from ..cms_plugins import SegmentPluginBase
 from ..models import SegmentBasePluginModel
 
-import logging
-logger = logging.getLogger(__name__)
-logger.info('Logging enabled.')
 
 #
 # A simple enum so we can use the same code in Python's < 3.4.
@@ -104,16 +101,32 @@ class SegmentPool(object):
         register them.
         '''
 
-        for plugin_instance in CMSPlugin.objects.all():
-            plugin_instance, plugin_class = plugin_instance.get_plugin_instance()
+        #
+        # To reduce the number of queries we'll be making against CMSPlugin,
+        # let's build a set of eligible plugin_types. This part should not hit
+        # the database at all (provided that the plugin_pool is already
+        # populated.)
+        #
+        # In this case, 'eligible' means that the plugin class subclasses
+        # SegmentPluginBase and that it has allow_overrides = True. Segment
+        # plugins that have allow_overrides = False are not registered.
+        #
+        plugin_types = []
+        for plugin_class in plugin_pool.get_all_plugins():
+            if (issubclass(plugin_class, SegmentPluginBase) and
+                    plugin_class.allow_overrides):
+                plugin_types.append(plugin_class.__name__)
 
-            if (isinstance(plugin_class, SegmentPluginBase) and 
-                plugin_class.allow_overrides
-            ):
-                self.register_segment_plugin(
-                    plugin_instance,
-                    suppress_discovery=(not self.segments)
-                )
+        #
+        # Process the plugins that are one of these types.
+        #
+        for plugin_instance in CMSPlugin.objects.filter(plugin_type__in=plugin_types):
+            #
+            # Get the instance as an instance of its proper class rather than
+            # this CMSPlugin object.
+            #
+            plugin_instance = plugin_instance.get_plugin_instance()[0]
+            self.register_segment_plugin(plugin_instance, suppress_discovery=True)
 
 
     def register_segment_plugin(self, plugin_instance, suppress_discovery=False):
