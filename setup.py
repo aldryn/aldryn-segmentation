@@ -6,6 +6,9 @@ from aldryn_segmentation import __version__
 REQUIREMENTS = [
     # 'django-cms>=3.0.3'
     # 'aldryn-country-segment>=0.1.0'
+    # git tag '[version]'
+    # git push --tags origin master
+    # python setup.py sdist upload
 ]
 
 CLASSIFIERS = [
