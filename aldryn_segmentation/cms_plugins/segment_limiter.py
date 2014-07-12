@@ -51,10 +51,12 @@ class SegmentLimitPlugin(SegmentPluginBase):
         '''
 
         children = []
+        # child_plugin_instances can sometimes be None
+        generic_children = instance.child_plugin_instances or []
         render_all = (instance.max_children == 0)
         slots_remaining = instance.max_children
 
-        for child_instance in instance.child_plugin_instances:
+        for child_instance in generic_children:
 
             child_plugin = child_instance.get_plugin_class_instance()
 
