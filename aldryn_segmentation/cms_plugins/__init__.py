@@ -3,3 +3,4 @@
 from .segment_plugin_base import *
 from .segment_plugins import *
 from .segment_limiter import *
+from .set_cookie_plugin import *

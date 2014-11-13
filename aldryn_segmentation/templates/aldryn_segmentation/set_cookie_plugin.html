@@ -1,0 +1,15 @@
+{% load l10n %}
+<script>
+(function(){
+  var k='{{ instance.key }}',
+    v='{{ instance.value }}',
+    d=parseInt({{ instance.days_to_expire|unlocalize }},10)||0,
+    t=new Date(),
+    p='{{ instance.path }}';
+    o={% if instance.overwrite %}true{% else %}false{% endif %};
+  if (o || !(document.cookie.indexOf(k+"=") == 0 || document.cookie.indexOf("; "+k+"=") > 0)){
+    t.setDate(t.getDate()+d);
+    document.cookie=k+"="+escape(v)+(!d?"":"; expires="+t.toUTCString())+"; path="+p;
+  }
+}());
+</script>
