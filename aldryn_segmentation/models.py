@@ -235,7 +235,7 @@ class Segment(models.Model):
     '''
 
     class Meta:
-        managed=False
+        managed = False
 
     def __str__(self):
         return 'Segment is an empty, unmanaged model.'
