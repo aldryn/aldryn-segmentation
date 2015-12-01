@@ -30,8 +30,6 @@ class FallbackSegmentPlugin(SegmentPluginBase):
     def is_context_appropriate(self, context, instance):
         return True
 
-plugin_pool.register_plugin(FallbackSegmentPlugin)
-
 
 class SwitchSegmentPlugin(SegmentPluginBase):
     '''
@@ -49,8 +47,6 @@ class SwitchSegmentPlugin(SegmentPluginBase):
     def is_context_appropriate(self, context, instance):
         return instance.on_off
 
-plugin_pool.register_plugin(SwitchSegmentPlugin)
-
 
 class CookieSegmentPlugin(SegmentPluginBase):
     '''
@@ -66,8 +62,6 @@ class CookieSegmentPlugin(SegmentPluginBase):
         value = request.COOKIES.get(instance.cookie_key)
         return (value == instance.cookie_value)
 
-plugin_pool.register_plugin(CookieSegmentPlugin)
-
 
 class AuthenticatedSegmentPlugin(SegmentPluginBase):
     '''
@@ -82,4 +76,8 @@ class AuthenticatedSegmentPlugin(SegmentPluginBase):
         request = context.get('request')
         return request and request.user and request.user.is_authenticated()
 
+
 plugin_pool.register_plugin(AuthenticatedSegmentPlugin)
+plugin_pool.register_plugin(CookieSegmentPlugin)
+plugin_pool.register_plugin(FallbackSegmentPlugin)
+plugin_pool.register_plugin(SwitchSegmentPlugin)

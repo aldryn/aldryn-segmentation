@@ -7,6 +7,7 @@ from django.contrib import admin
 from .models import Segment
 from .views import set_segment_override, reset_all_segment_overrides
 
+
 class SegmentAdmin(admin.ModelAdmin):
 
     #
@@ -23,7 +24,6 @@ class SegmentAdmin(admin.ModelAdmin):
         '''
         return dict()
 
-
     def get_urls(self):
 
         return [
@@ -37,5 +37,6 @@ class SegmentAdmin(admin.ModelAdmin):
                 name='reset_all_segment_overrides'
             ),
         ] + super(SegmentAdmin, self).get_urls()
+
 
 admin.site.register(Segment, SegmentAdmin)
