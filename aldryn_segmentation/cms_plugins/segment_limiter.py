@@ -60,6 +60,12 @@ class SegmentLimitPlugin(SegmentPluginBase):
 
             child_plugin = child_instance.get_plugin_class_instance()
 
+            if child_plugin.model != child_instance.__class__:
+                # If the child_instance's class does NOT
+                # equal the registered plugin's model
+                # then we're dealing with an orphan plugin.
+                continue
+
             if render_all or slots_remaining > 0:
 
                 if hasattr(child_plugin, 'is_context_appropriate'):
