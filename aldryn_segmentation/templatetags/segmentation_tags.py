@@ -52,19 +52,15 @@ class RenderSegmentPlugin(RenderPlugin):
         # OK, what does the plugin's is_context_appropriate() say?
         return child_plugin.is_context_appropriate(context, plugin_instance)
 
-    def render_tag(self, context, **kwargs):
-        kwargs.pop('render_plugin', None)
-        return super(RenderSegmentPlugin, self).render_tag(context, **kwargs)
-
-    def get_context(self, context, plugin, render_plugin):
-        response = super(RenderSegmentPlugin, self).get_context(context, plugin)
+    def render_tag(self, context, plugin, render_plugin):
+        response = super(RenderSegmentPlugin, self).render_tag(context, plugin)
 
         if not (render_plugin and self.is_renderable(context, plugin)):
             # OK, this is a Segmentation Plugin that is NOT appropriate for
             # rendering in the current context. Unfortunately, we need to
             # render the plugin, but throw away the results in order to allow
             # the structureboard to display properly. Ugh!
-            response['content'] = ''
+            return ''
         return response
 
 
