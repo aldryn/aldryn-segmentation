@@ -52,6 +52,10 @@ class RenderSegmentPlugin(RenderPlugin):
         # OK, what does the plugin's is_context_appropriate() say?
         return child_plugin.is_context_appropriate(context, plugin_instance)
 
+    def render_tag(self, context, **kwargs):
+        kwargs.pop('render_plugin', None)
+        return super(RenderSegmentPlugin, self).render_tag(context, **kwargs)
+
     def get_context(self, context, plugin, render_plugin):
         response = super(RenderSegmentPlugin, self).get_context(context, plugin)
 
