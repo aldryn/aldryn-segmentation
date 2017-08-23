@@ -1,90 +1,21 @@
 Aldryn Segmentation
 ===================
 
-Development Status
-------------------
-
-### Segment Limter:
-- [x] Limiter
-
-### Segment Plugins:
-- [x] Fallback
-- [x] Segment by Switch (hard switch)
-- [x] Segment by Cookie
-- [x] Segment by Country
-- [x] Segment by Auth Status (is authenticated)
-- [x] Overridable
-
-### Segment Pool:
-- [x] Registration
-- [x] De-registration
-- [x] Discovery
-- [x] Get override state for segment
-- [x] Reset all overrides
-- [x] Supports multiple operators
-
-### Toolbar:
-- [x] Displays
-- [x] Working override states
-- [x] Working "Reset all" option
-- [x] Displays no. of overrides in Segment menu name
-
-### Tests:
-
-These tests are performed in the test_project.
-
-- [x] Segment logic tests
-- [x] Segment Pool tests
-- [x] I18N tests
-- [x] Multiple operator tests
-
-### Other:
-- [x] Move the Country Segment and its related bits to another repo?
-- [x] Ensure compatibility with supported Pythons (vs. Django 1.6)
-	  - [x] Python 2.6.x
-      - [x] Python 2.7.x
-      - [x] Python 3.3.x
-      - [x] Python 3.4.x
-- [x] Ensure compatibility with supported Djangos (vs. Python 2.7)
-      - [x] Django 1.4.x
-      - [x] Django 1.5.x
-      - [x] Django 1.6.x
-
-
-Known Issues
-------------
-
-This is a list of known issues that are being worked on...
-
-- [ ] UI for the Limit plugin needs some work. Ideas?
-
-- [x] French translation is available (via by translate.google.com)
-
-- [x] Does not seem to work with the new Alias Plugin...
-      Actually, its just that the AliasPlugin didn't work in Django 1.4.13.
-      I've submitted a PR to fix this and added tests to help detect and
-      prevent future issues.
-
-
 Installation
 ------------
 
 At this time, the package is not submitted to PyPi, but you can still use pip
 if you like. Here's how to get started quickly:
 
-NOTE: At this time, the project has only been tested under:
-- Python 2.6, 2.7, 3.3, 3.4
-- Django 1.4, 1.5, 1.6
-- django CMS 3.0.2 (276fd37b0e49555bafce6c071ca50508de5e4c49 or later)
+Requirements:
+- python 2.7+ or 3.5+
+- Django 1.8+
+- django CMS 3.5+
 
-1. Make sure you're using a version of django-CMS that is later than
-   3.0.2.dev1, otherwise the Segment menu will not appear correctly and likely
-   the whole toolbar won't render at all.
 1. If you're using Python 3, it is recommended also install:
    `pip intall pyuca` for better collation of non-EN languages.
 1. `pip install https://github.com/aldryn/aldryn-segmentation/archive/master.zip`
 1. Add 'aldryn_segmentation' to INSTALLED_APPS in your Django project's settings file
-1. `python manage.py schemamigration aldryn_segmentation --initial`
 1. `python manage.py migrate aldryn_segmentation`
 
 Optional, but required if you intend to run the test project included in the

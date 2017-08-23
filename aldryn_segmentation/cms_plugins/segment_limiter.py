@@ -31,7 +31,6 @@ class SegmentLimitPlugin(SegmentPluginBase):
             context, instance)
         return context
 
-
     def is_context_appropriate(self, context, instance):
         '''
         Returns True if any of its children are context-appropriate,
@@ -40,7 +39,6 @@ class SegmentLimitPlugin(SegmentPluginBase):
         apt_children = self.get_context_appropriate_children(context, instance)
         num_apt = sum( 1 for child in apt_children if child[1] )
         return num_apt > 0
-
 
     def get_context_appropriate_children(self, context, instance):
         from ..segment_pool import SegmentOverride
